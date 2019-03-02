@@ -6,25 +6,43 @@
 <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 <style>
-.container {display: flex; flex-wrap:nowrap;}
-.sidebar {width:8%;}
+
+@media all {
+
+.container {display: flex; flex-wrap:wrap;}
 .logocontain {width:100px; display: inline-block;}
 .textcontain {display: inline-block; position: fixed; top:10px; left:10px;}
 .logo {width:100%;}
 .banner {width:100%;}
-.mainarea {width:92%;}
 .thumb {width:100%;}
-.grid-item {width:23.5%; padding:10px; min-height: auto;}
-.grid-item--width1 { width:24.5%;padding:10px;}
-.grid-item--width2 { width:49%;padding:10px;}
-.grid-item--width3 {width:74%;padding:10px;}
-.grid-item--width4 {width:99%;padding:10px;}
 .headtext {font-size:1.4rem; font-family: 'Raleway', sans-serif;font-weight: 900;font-style: italic;}
 .supportext {font-size:1rem; font-family: 'Roboto', sans-serif; margin-bottom:20px;}
 .infotext {font-family: 'Roboto', sans-serif; color:#6d7680; font-size:0.8rem;}
 .iteminfo {font-family: 'Roboto', sans-serif; color:#6d7680; font-size:0.7rem; position: fixed; bottom:10px; left:10px;}
 .links {font-family: 'Roboto', sans-serif; color:#6d7680; font-size:1em;margin-bottom:10px;}
 a {text-decoration: none; color:#6d7680;}
+
+}
+
+@media (min-width:601px) {
+
+.sidebar {width:8%; min-height: 150px;}
+.mainarea {width:92%;}
+.grid-item {width:23.5%; padding:10px; min-height: auto;}
+.grid-item--width1 { width:24.5%;padding:10px;}
+.grid-item--width2 { width:49%;padding:10px;}
+.grid-item--width3 {width:74%;padding:10px;}
+.grid-item--width4 {width:99%;padding:10px;}
+
+}
+
+@media (max-width:600px) {
+
+	.sidebar {width:100%;}
+	.mainarea {width:100%;}
+	.grid-item {width:100%;}
+}
+
 </style>
 
 <body>
