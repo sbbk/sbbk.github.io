@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://unpkg.com/imagesloaded@4/imagesloaded.pkgd.min.js"></script>
 <script src="https://unpkg.com/isotope-layout@3/dist/isotope.pkgd.js"></script>
 <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
@@ -77,21 +78,16 @@ a {text-decoration: none; color:#6d7680;}
 
 <script>
 
- $(document).ready( function() {   
-
-var elem = document.querySelector('.grid');
-var iso = new Isotope( elem, {
-  // options
+var $grid = $('.grid').isotope({
   itemSelector: '.grid-item',
-  layoutMode: 'fitRows'
+  percentPosition: true
 });
+// layout Isotope after each image loads
+$grid.imagesLoaded().progress( function() {
+  $grid.isotope('layout');
+});  
 
-// element argument can be a selector string
-//   for an individual element
-var iso = new Isotope( '.grid', {
-  // options
-});
-});
+
 </script>
 
 </html>
