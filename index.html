@@ -16,7 +16,7 @@
 .logo {width:100%;}
 .banner {width:100%;}
 .thumb {width:100%;}
-.headtext {font-size:1.4rem; font-family: 'Raleway', sans-serif;font-weight: 900;font-style: italic;}
+.headtext {font-size:1.4rem; font-family: 'Raleway', sans-serif;font-weight: 900;font-style: italic; cursor: help;}
 .supportext {font-size:1rem; font-family: 'Roboto', sans-serif; margin-bottom:20px;}
 .infotext {font-family: 'Roboto', sans-serif; color:#6d7680; font-size:0.8rem;}
 .iteminfo {font-family: 'Roboto', sans-serif; color:#6d7680; font-size:0.7rem; position: fixed; bottom:10px; left:10px;}
@@ -53,7 +53,7 @@ a {text-decoration: none; color:#6d7680;}
 <div class="container">
 <div class="sidebar">
 	<div class="textcontain">
-		<div class="headtext">SBBK</div>
+		<div class="headtext"  onmouseover="document.getElementById('sly').style.display = 'block';" onmouseout="document.getElementById('sly').style.display = 'none';">SBBK</div>
 		<div class="supportext">Elliot O.G Turner</div>
 		<div class="links">
 			<a href="index.html">Work</a>
@@ -63,9 +63,8 @@ a {text-decoration: none; color:#6d7680;}
 	</div>
 </div>
 <div class="mainarea">
-<div class="banner"><img class="thumb" src="/folioimage-10.png"></div>
+<div class="banner""><img class="thumb" src="/folioimage-10.png"></div>
 <div class="grid">
-	<div class="grid-item" onmouseover="document.getElementById('banner').style.display = 'block';" onmouseout="document.getElementById('banner').style.display = 'none';"><img class="thumb" src="/folioimage-01.png" /></div>
 	<div class="grid-item" onmouseover="document.getElementById('1').style.display = 'block';" onmouseout="document.getElementById('1').style.display = 'none';"><img class="thumb" src="/folioimage-01.png" /></div>
 	<div class="grid-item" onmouseover="document.getElementById('2').style.display = 'block';" onmouseout="document.getElementById('2').style.display = 'none';"><img class="thumb" src="https://media.giphy.com/media/2iovWQFbtRcAteqlBv/source.gif" /></div>
 	<div class="grid-item" onmouseover="document.getElementById('3').style.display = 'block';" onmouseout="document.getElementById('3').style.display = 'none';"><img class="thumb" src="/folioimage-02.png" /></div>
@@ -83,7 +82,7 @@ a {text-decoration: none; color:#6d7680;}
 </div>
 </div>
 </div>
-	<div id="banner" class="iteminfo" style="display:none">RIP Dilla<Br>RIP Nujabes</div>
+	<div id="sly" class="iteminfo" style="display:none">Janine<br>Alvena<br>Amber<br>VROK<br>Caveman</div>
 	<div id="1" class="iteminfo" style="display:none">Arcane Sanctuary</div>
 	<div id="2" class="iteminfo" style="display:none">Safe</div>
 	<div id="3" class="iteminfo" style="display:none">Fisheye events cover<br><b>www.hullboxoffice.com</b></a></div>
