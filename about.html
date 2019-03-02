@@ -3,19 +3,38 @@
 <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 <style>
+
+@media all {
+
 .container {display: flex; flex-wrap:nowrap;}
 .sidebar {width:8%;}
-.logocontain {width:100px; display: inline-block;}
 .textcontain {display: inline-block; position: fixed; top:10px; left:10px;}
-.mainarea {width:50%; padding:20px; display:none;}
-.secondarea {width:35%; margin-left: auto;margin-right: auto; padding-right:200px;}
-.secondareaimg {width:100%;}
+.logocontain {width:100px; display: inline-block;}
 .headtext {font-size:1.4rem; font-family: 'Raleway', sans-serif;font-weight: 900;font-style: italic;}
 .supportext {font-size:1rem; font-family: 'Roboto', sans-serif; margin-bottom:20px;}
 .infotext {font-family: 'Roboto', sans-serif; color:#6d7680; font-size:0.8rem;}
 .iteminfo {font-family: 'Roboto', sans-serif; color:#6d7680; font-size:0.7rem; position: fixed; bottom:10px; left:10px;}
 .links {font-family: 'Roboto', sans-serif; color:#6d7680; font-size:1em;margin-bottom:10px;}
 a {text-decoration: none; color:#6d7680;}
+
+}
+
+@media (min-width:601px) {
+
+
+.mainarea {width:50%; padding:20px; display:none;}
+.secondarea {width:35%; margin-left: auto;margin-right: auto; padding-right:200px;}
+.secondareaimg {width:100%;}
+
+
+}
+
+@media (max-width:600px) {
+
+.sidebar {width:100%; min-height: 150px;}
+.mainarea {width:100%;}
+.secondarea {width:90%; margin-left: auto;margin-right: auto; padding-right:200px;}
+
 </style>
 
 <body>
