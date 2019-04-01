@@ -1,7 +1,7 @@
 <?php
 
 // Add correct path to your countlog.txt file.
-$path = '/path/to/countlog.txt';
+$path = '/countlog.txt';
 
 // Opens countlog.txt to read the number of hits.
 $file  = fopen( $path, 'r' );
