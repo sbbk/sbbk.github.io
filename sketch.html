@@ -55,27 +55,23 @@ a {text-decoration: none; color:#6d7680;}
 	<div class="textcontain">
 		<div class="headtext"  onmouseover="document.getElementById('sly').style.display = 'block';" onmouseout="document.getElementById('sly').style.display = 'none';">SBBK</div>
 				<div class="infotext">Sketchbook scribs.. <br>cheers!</div><br>
-				<?php
-
-// Add correct path to your countlog.txt file.
-$path = '/countlog.txt';
-
-// Opens countlog.txt to read the number of hits.
-$file  = fopen( $path, 'r' );
-$count = fgets( $file, 1000 );
-fclose( $file );
-
-// Update the count.
-$count = abs( intval( $count ) ) + 1;
-
-// Output the updated count.
-echo "{$count} hits\n";
-
-// Opens countlog.txt to change new hit number.
-$file = fopen( $path, 'w' );
-fwrite( $file, $count );
-fclose( $file );
+				<?php 
+$handle = fopen("counter.txt", "r");
+if(!$handle){
+ echo "could not open the file" ;
+}
+else {
+	$counter = ( int ) fread ($handle,20) ;
+	fclose ($handle) ;
+	$counter++ ;
+	echo" <strong> you are visitor no ".  $counter . " < /strong >  " ;
+$handle =  fopen("counter.txt", "w" ) ;
+fwrite($handle,$counter) ;
+fclose ($handle) ;
+	}
 ?>
+
+
 		<div class="links">
 			<a href="/">Home</a>
 			<a href="/sketch">Scribs</a>
