@@ -218,6 +218,18 @@ button.inactive {
   background: #000;
   border-left: 1px solid #fff3;
   padding: 1rem;
+  overflow: hidden;
+}
+
+#browser-wrapper {
+  height: 100%;
+  position: relative;
+  overflow: scroll;
+}
+
+#browser-wrapper > div {
+  height: 100%;
+  position: relative;
 }
 
 #context-wrapper, #context-container, .pad-context {
@@ -454,6 +466,17 @@ button.inactive {
 
 .resource-player {
   flex-grow: 1;
+}
+
+.resource-tags-container {
+  display: flex;
+}
+
+.resource-tag {
+  color: #fff;
+  border: 1px solid #fff;
+  margin: 2px;
+  padding: 3px;
 }
 
 /*# sourceMappingURL=index.2e8c441c.css.map */

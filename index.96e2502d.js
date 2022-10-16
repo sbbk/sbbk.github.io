@@ -614,7 +614,7 @@ let Pads;
                 class: "pad-array",
                 __source: {
                     fileName: "src/main.tsx",
-                    lineNumber: 90,
+                    lineNumber: 91,
                     columnNumber: 28
                 },
                 __self: this
@@ -626,7 +626,7 @@ let Pads;
                     "data-note": note,
                     __source: {
                         fileName: "src/main.tsx",
-                        lineNumber: 94,
+                        lineNumber: 95,
                         columnNumber: 27
                     },
                     __self: this
@@ -686,7 +686,7 @@ let Pads;
                 activePad: Pads.Application.activePad,
                 __source: {
                     fileName: "src/main.tsx",
-                    lineNumber: 161,
+                    lineNumber: 162,
                     columnNumber: 27
                 },
                 __self: this
@@ -49727,17 +49727,40 @@ class GroupManager {
             };
             this.padGroups.push(group);
         }
-        this.activeGroup = this.padGroups[0];
+        (0, _main.Pads).Application.activeGroup = this.padGroups[0];
         let groupButton = document.querySelector(".group-button");
         groupButton.classList.remove("inactive");
+        this.bindKeys();
         return true;
     }
     selectGroup(group) {
+        (0, _main.Pads).Application.activeGroup = group;
         this.render(group);
-        if (this.activeGroup.padManager.activePad) {
-            this.activeGroup.padManager.activePad.padContext.classList.add("d-none");
-            this.activeGroup.padManager.activePad = null;
+        if ((0, _main.Pads).Application.activeGroup.padManager.activePad) {
+            (0, _main.Pads).Application.activeGroup.padManager.activePad.padContext.classList.add("d-none");
+            (0, _main.Pads).Application.activeGroup.padManager.activePad = null;
         }
+    }
+    bindKeys() {
+        let keys = [
+            "Digit1",
+            "Digit2",
+            "Digit3",
+            "Digit4"
+        ];
+        this.padGroups.forEach((group, index)=>{
+            document.addEventListener("keypress", (e)=>{
+                if (e.code == keys[index]) {
+                    let groupButtons = document.querySelectorAll(".group-button");
+                    groupButtons.forEach((button)=>{
+                        button.classList.add("inactive");
+                    });
+                    (0, _main.Pads).Application.activeGroup = group;
+                    group.groupButton.classList.remove("inactive");
+                    this.render(group);
+                }
+            });
+        });
     }
     render(group) {
         // Hide all groups
@@ -49766,7 +49789,7 @@ class PadGroup {
             class: `group-container`,
             __source: {
                 fileName: "src/components/samplePad.tsx",
-                lineNumber: 131,
+                lineNumber: 157,
                 columnNumber: 31
             },
             __self: this
@@ -49776,7 +49799,7 @@ class PadGroup {
             class: `pad-context d-none`,
             __source: {
                 fileName: "src/components/samplePad.tsx",
-                lineNumber: 134,
+                lineNumber: 160,
                 columnNumber: 29
             },
             __self: this
@@ -49791,7 +49814,7 @@ class PadGroup {
             class: `group-button inactive ${this.color}`,
             __source: {
                 fileName: "src/components/samplePad.tsx",
-                lineNumber: 143,
+                lineNumber: 169,
                 columnNumber: 28
             },
             __self: this
@@ -49804,7 +49827,7 @@ class PadGroup {
                 event: e,
                 __source: {
                     fileName: "src/components/samplePad.tsx",
-                    lineNumber: 148,
+                    lineNumber: 174,
                     columnNumber: 27
                 },
                 __self: this
@@ -49844,7 +49867,7 @@ class PadManager {
         class: "pad-array standard-sort",
         __source: {
             fileName: "src/components/samplePad.tsx",
-            lineNumber: 199,
+            lineNumber: 225,
             columnNumber: 38
         },
         __self: this
@@ -49855,7 +49878,7 @@ class PadManager {
         style: "display:none",
         __source: {
             fileName: "src/components/samplePad.tsx",
-            lineNumber: 201,
+            lineNumber: 227,
             columnNumber: 37
         },
         __self: this
@@ -49897,7 +49920,7 @@ class PadManager {
                 class: `default-button ${this.color} mode-toggle inactive d-none`,
                 __source: {
                     fileName: "src/components/samplePad.tsx",
-                    lineNumber: 225,
+                    lineNumber: 251,
                     columnNumber: 30
                 },
                 __self: this
@@ -49936,7 +49959,15 @@ class PadManager {
         });
         this.singlePadArray.forEach((pad, index)=>{
             document.addEventListener("keypress", (e)=>{
+                console.log(e.code);
                 if (e.code == this.keyList[index]) {
+                    (0, _main.Pads).Application.toggleRightContent("Context");
+                    let pad = (0, _main.Pads).Application.activeGroup.padManager.singlePadArray[index];
+                    (0, _main.Pads).Application.activePad = pad;
+                    this.render(pad);
+                    if (!(0, _main.Pads).Application.activePad.activeComponent) (0, _main.Pads).Application.toggleRightContent("Explorer");
+                    else (0, _main.Pads).Application.toggleRightContent("Context");
+                    pad.renderContext();
                     if (!pad.activeComponent) return;
                     if (!pad.activeComponent.isReady) return;
                     if (pad.isPlaying) return;
@@ -50022,7 +50053,7 @@ class PadManager {
                         class: "pad",
                         __source: {
                             fileName: "src/components/samplePad.tsx",
-                            lineNumber: 392,
+                            lineNumber: 429,
                             columnNumber: 36
                         },
                         __self: this
@@ -50064,7 +50095,7 @@ class Pad {
         this.activeComponentContext = /*#__PURE__*/ (0, _jsx.jsx)("div", {
             __source: {
                 fileName: "src/components/samplePad.tsx",
-                lineNumber: 455,
+                lineNumber: 492,
                 columnNumber: 39
             },
             __self: this
@@ -50073,7 +50104,7 @@ class Pad {
             class: "pad-context d-none",
             __source: {
                 fileName: "src/components/samplePad.tsx",
-                lineNumber: 456,
+                lineNumber: 493,
                 columnNumber: 27
             },
             __self: this
@@ -50090,7 +50121,7 @@ class Pad {
             style: "width:10%",
             __source: {
                 fileName: "src/components/samplePad.tsx",
-                lineNumber: 466,
+                lineNumber: 503,
                 columnNumber: 28
             },
             __self: this
@@ -50109,7 +50140,7 @@ class Pad {
             },
             __source: {
                 fileName: "src/components/samplePad.tsx",
-                lineNumber: 466,
+                lineNumber: 503,
                 columnNumber: 66
             },
             __self: this
@@ -50119,7 +50150,7 @@ class Pad {
             class: "pad-content-name",
             __source: {
                 fileName: "src/components/samplePad.tsx",
-                lineNumber: 468,
+                lineNumber: 505,
                 columnNumber: 20
             },
             __self: this
@@ -50129,7 +50160,7 @@ class Pad {
             style: "width:90%;height: 100%;display: flex;justify-content: center;align-items: center;",
             __source: {
                 fileName: "src/components/samplePad.tsx",
-                lineNumber: 469,
+                lineNumber: 506,
                 columnNumber: 23
             },
             __self: this
@@ -50142,7 +50173,7 @@ class Pad {
             style: "display:flex; padding:0px",
             __source: {
                 fileName: "src/components/samplePad.tsx",
-                lineNumber: 471,
+                lineNumber: 508,
                 columnNumber: 25
             },
             __self: this
@@ -50162,7 +50193,7 @@ class Pad {
                 class: "file-drop",
                 __source: {
                     fileName: "src/components/samplePad.tsx",
-                    lineNumber: 489,
+                    lineNumber: 526,
                     columnNumber: 28
                 },
                 __self: this
@@ -50264,7 +50295,7 @@ class Pad {
                 event: e,
                 __source: {
                     fileName: "src/components/samplePad.tsx",
-                    lineNumber: 605,
+                    lineNumber: 642,
                     columnNumber: 27
                 },
                 __self: this
@@ -50316,7 +50347,7 @@ class Pad {
             let componentButton = /*#__PURE__*/ (0, _jsx.jsx)("button", {
                 __source: {
                     fileName: "src/components/samplePad.tsx",
-                    lineNumber: 670,
+                    lineNumber: 707,
                     columnNumber: 35
                 },
                 __self: this
@@ -50356,7 +50387,7 @@ class EffectsStack {
             name: "Effects",
             __source: {
                 fileName: "src/components/samplePad.tsx",
-                lineNumber: 716,
+                lineNumber: 753,
                 columnNumber: 28
             },
             __self: this
@@ -50395,7 +50426,7 @@ class SynthPad {
             class: "pad-array",
             __source: {
                 fileName: "src/components/samplePad.tsx",
-                lineNumber: 738,
+                lineNumber: 775,
                 columnNumber: 24
             },
             __self: this
@@ -50407,7 +50438,7 @@ class SynthPad {
                 "data-note": note,
                 __source: {
                     fileName: "src/components/samplePad.tsx",
-                    lineNumber: 742,
+                    lineNumber: 779,
                     columnNumber: 23
                 },
                 __self: this
@@ -50496,7 +50527,7 @@ class SamplePad {
                 class: "pad-content-name",
                 __source: {
                     fileName: "src/components/samplePad.tsx",
-                    lineNumber: 878,
+                    lineNumber: 915,
                     columnNumber: 24
                 },
                 __self: this
@@ -50521,7 +50552,7 @@ class SamplePad {
         let canvasHolder = /*#__PURE__*/ (0, _jsx.jsx)("div", {
             __source: {
                 fileName: "src/components/samplePad.tsx",
-                lineNumber: 905,
+                lineNumber: 942,
                 columnNumber: 28
             },
             __self: this
@@ -50531,7 +50562,7 @@ class SamplePad {
             class: `default-button ${this.pad.color}`,
             __source: {
                 fileName: "src/components/samplePad.tsx",
-                lineNumber: 908,
+                lineNumber: 945,
                 columnNumber: 43
             },
             __self: this
@@ -50545,7 +50576,7 @@ class SamplePad {
             color: color,
             __source: {
                 fileName: "src/components/samplePad.tsx",
-                lineNumber: 914,
+                lineNumber: 951,
                 columnNumber: 34
             },
             __self: this
@@ -50557,7 +50588,7 @@ class SamplePad {
                 let title = /*#__PURE__*/ (0, _jsx.jsx)("h3", {
                     __source: {
                         fileName: "src/components/samplePad.tsx",
-                        lineNumber: 920,
+                        lineNumber: 957,
                         columnNumber: 29
                     },
                     __self: this
@@ -50565,7 +50596,7 @@ class SamplePad {
                     class: self.pad.color,
                     __source: {
                         fileName: "src/components/samplePad.tsx",
-                        lineNumber: 920,
+                        lineNumber: 957,
                         columnNumber: 39
                     },
                     __self: this
@@ -51369,6 +51400,9 @@ var _samplePad = require("../../components/samplePad");
 var _main = require("../../main");
 var _utils = require("../../components/Utils");
 var _mp3 = require("../../resources/*.mp3");
+var _wav = require("../../resources/phrixus/drums/*.wav");
+var _wav1 = require("../../resources/phrixus/bass/*.wav");
+var _wav2 = require("../../resources/phrixus/texture/*.wav");
 let css = require("../contextMenu/context.css");
 class ResourceBrowser {
     wrapper = document.getElementById("browser-wrapper");
@@ -51379,14 +51413,56 @@ class ResourceBrowser {
         for(let i = 0; i < resourceURLs.length; i++){
             let object = {
                 "name": resourceNames[i],
-                "path": resourceURLs[i]
+                "path": resourceURLs[i],
+                "tags": [
+                    "bork"
+                ]
             };
             resourceObjects.push(object);
+        }
+        let phrixDrumsUrl = Object.values(_wav);
+        let phrixDrumsNames = Object.keys(_wav);
+        for(let i1 = 0; i1 < phrixDrumsUrl.length; i1++){
+            let object1 = {
+                "name": phrixDrumsNames[i1],
+                "path": phrixDrumsUrl[i1],
+                "tags": [
+                    "phrixus",
+                    "drums"
+                ]
+            };
+            resourceObjects.push(object1);
+        }
+        let phrixBassUrl = Object.values(_wav1);
+        let phrixBassNames = Object.keys(_wav1);
+        for(let i2 = 0; i2 < phrixDrumsUrl.length; i2++){
+            let object2 = {
+                "name": phrixBassNames[i2],
+                "path": phrixBassUrl[i2],
+                "tags": [
+                    "phrixus",
+                    "bass"
+                ]
+            };
+            resourceObjects.push(object2);
+        }
+        let phrixTexUrl = Object.values(_wav2);
+        let phrixTexNames = Object.keys(_wav2);
+        for(let i3 = 0; i3 < phrixDrumsUrl.length; i3++){
+            let object3 = {
+                "name": phrixTexNames[i3],
+                "path": phrixBassNames[i3],
+                "tags": [
+                    "phrixus",
+                    "texture"
+                ]
+            };
+            resourceObjects.push(object3);
         }
         let browser = /*#__PURE__*/ (0, _jsx.jsx)("div", {
             __source: {
                 fileName: "src/views/resourceBrowser/resourcebrowser.tsx",
-                lineNumber: 36,
+                lineNumber: 81,
                 columnNumber: 23
             },
             __self: this
@@ -51396,9 +51472,10 @@ class ResourceBrowser {
             let resourceItem = /*#__PURE__*/ (0, _jsx.jsx)(ResourceItem, {
                 name: item.name,
                 path: item.path,
+                tags: item.tags,
                 __source: {
                     fileName: "src/views/resourceBrowser/resourcebrowser.tsx",
-                    lineNumber: 39,
+                    lineNumber: 84,
                     columnNumber: 32
                 },
                 __self: this
@@ -51413,12 +51490,33 @@ class ResourceItem {
     render() {
         // let item;
         this.url = new URL(this.path, "file:///src/views/resourceBrowser/resourcebrowser.tsx");
+        let tagContainer = /*#__PURE__*/ (0, _jsx.jsx)("div", {
+            class: "resource-tags-container",
+            __source: {
+                fileName: "src/views/resourceBrowser/resourcebrowser.tsx",
+                lineNumber: 107,
+                columnNumber: 28
+            },
+            __self: this
+        });
+        this.tags.forEach((tag)=>{
+            let tagItem = /*#__PURE__*/ (0, _jsx.jsx)("div", {
+                class: "resource-tag",
+                __source: {
+                    fileName: "src/views/resourceBrowser/resourcebrowser.tsx",
+                    lineNumber: 110,
+                    columnNumber: 27
+                },
+                __self: this
+            }, tag);
+            tagContainer.appendChild(tagItem);
+        });
         let loadButton = /*#__PURE__*/ (0, _jsx.jsx)("button", {
             type: "button",
             class: "mr-2",
             __source: {
                 fileName: "src/views/resourceBrowser/resourcebrowser.tsx",
-                lineNumber: 61,
+                lineNumber: 114,
                 columnNumber: 26
             },
             __self: this
@@ -51427,7 +51525,7 @@ class ResourceItem {
             class: "resource-item d-flex w-100 justify-between align-center",
             __source: {
                 fileName: "src/views/resourceBrowser/resourcebrowser.tsx",
-                lineNumber: 62,
+                lineNumber: 115,
                 columnNumber: 20
             },
             __self: this
@@ -51435,7 +51533,7 @@ class ResourceItem {
             class: "resource-name",
             __source: {
                 fileName: "src/views/resourceBrowser/resourcebrowser.tsx",
-                lineNumber: 63,
+                lineNumber: 116,
                 columnNumber: 25
             },
             __self: this
@@ -51443,7 +51541,7 @@ class ResourceItem {
             class: "resource-player",
             __source: {
                 fileName: "src/views/resourceBrowser/resourcebrowser.tsx",
-                lineNumber: 66,
+                lineNumber: 119,
                 columnNumber: 25
             },
             __self: this
@@ -51451,7 +51549,7 @@ class ResourceItem {
             controls: true,
             __source: {
                 fileName: "src/views/resourceBrowser/resourcebrowser.tsx",
-                lineNumber: 67,
+                lineNumber: 120,
                 columnNumber: 29
             },
             __self: this
@@ -51459,11 +51557,11 @@ class ResourceItem {
             src: this.url,
             __source: {
                 fileName: "src/views/resourceBrowser/resourcebrowser.tsx",
-                lineNumber: 68,
+                lineNumber: 121,
                 columnNumber: 33
             },
             __self: this
-        }))), loadButton);
+        }))), tagContainer, loadButton);
         loadButton.addEventListener("click", ()=>{
             if (!(0, _main.Pads).Application.activePad) {
                 (0, _utils.Notifications).Error.show("Please select a pad.");
@@ -51488,7 +51586,7 @@ class ResourceItem {
     }
 }
 
-},{"@vertx/jsx":"4ObNr","../../components/samplePad":"4Sqbm","../../main":"l4cos","../../components/Utils":"5fpwy","../../resources/*.mp3":"SuNeb","../contextMenu/context.css":"19oOC","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"SuNeb":[function(require,module,exports) {
+},{"@vertx/jsx":"4ObNr","../../components/samplePad":"4Sqbm","../../main":"l4cos","../../components/Utils":"5fpwy","../../resources/*.mp3":"SuNeb","../contextMenu/context.css":"19oOC","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","../../resources/phrixus/drums/*.wav":"XuchO","../../resources/phrixus/bass/*.wav":"jdfP7","../../resources/phrixus/texture/*.wav":"j7495"}],"SuNeb":[function(require,module,exports) {
 const _temp0 = require("./Kick.mp3");
 const _temp1 = require("./sponge.mp3");
 module.exports = {
@@ -51502,7 +51600,239 @@ module.exports = require("./helpers/bundle-url").getBundleURL("hjEE9") + "Kick.b
 },{"./helpers/bundle-url":"lgJ39"}],"irMCX":[function(require,module,exports) {
 module.exports = require("./helpers/bundle-url").getBundleURL("hjEE9") + "sponge.cfcb9b78.mp3" + "?" + Date.now();
 
-},{"./helpers/bundle-url":"lgJ39"}],"19oOC":[function() {},{}],"dIKiH":[function(require,module,exports) {
+},{"./helpers/bundle-url":"lgJ39"}],"19oOC":[function() {},{}],"XuchO":[function(require,module,exports) {
+const _temp0 = require("./hh_ DRUMS_LOOP_154BPM.wav");
+const _temp1 = require("./hh_ SUBTLEDRUMS_LOOP_154BPM.wav");
+const _temp2 = require("./Kick_Exile_4_Big.wav");
+const _temp3 = require("./Kick_Exile_4_Tight.wav");
+const _temp4 = require("./Soile_Kick_Pulse.wav");
+const _temp5 = require("./Soile_Kick_Rvb1.wav");
+const _temp6 = require("./Soile_Kick_Rvb2.wav");
+const _temp7 = require("./Soile_Kick_Rvb3.wav");
+const _temp8 = require("./Soile_Kick_Rvb4.wav");
+const _temp9 = require("./Soile_Kick_Rvb5.wav");
+module.exports = {
+    "hh_ DRUMS_LOOP_154BPM": _temp0,
+    "hh_ SUBTLEDRUMS_LOOP_154BPM": _temp1,
+    "Kick_Exile_4_Big": _temp2,
+    "Kick_Exile_4_Tight": _temp3,
+    "Soile_Kick_Pulse": _temp4,
+    "Soile_Kick_Rvb1": _temp5,
+    "Soile_Kick_Rvb2": _temp6,
+    "Soile_Kick_Rvb3": _temp7,
+    "Soile_Kick_Rvb4": _temp8,
+    "Soile_Kick_Rvb5": _temp9
+};
+
+},{"./hh_ DRUMS_LOOP_154BPM.wav":"dpS9I","./hh_ SUBTLEDRUMS_LOOP_154BPM.wav":"jERGN","./Kick_Exile_4_Big.wav":"1oe5z","./Kick_Exile_4_Tight.wav":"ejQM3","./Soile_Kick_Pulse.wav":"yYLE7","./Soile_Kick_Rvb1.wav":"dLINB","./Soile_Kick_Rvb2.wav":"eUjSD","./Soile_Kick_Rvb3.wav":"emhZI","./Soile_Kick_Rvb4.wav":"i7VpA","./Soile_Kick_Rvb5.wav":"8E9aM"}],"dpS9I":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("hjEE9") + "hh_ DRUMS_LOOP_154BPM.ec438e91.wav" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"lgJ39"}],"jERGN":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("hjEE9") + "hh_ SUBTLEDRUMS_LOOP_154BPM.3fede385.wav" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"lgJ39"}],"1oe5z":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("hjEE9") + "Kick_Exile_4_Big.19ba4dad.wav" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"lgJ39"}],"ejQM3":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("hjEE9") + "Kick_Exile_4_Tight.22a87cd0.wav" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"lgJ39"}],"yYLE7":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("hjEE9") + "Soile_Kick_Pulse.4f9f2289.wav" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"lgJ39"}],"dLINB":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("hjEE9") + "Soile_Kick_Rvb1.1b29059f.wav" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"lgJ39"}],"eUjSD":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("hjEE9") + "Soile_Kick_Rvb2.d9a45f9c.wav" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"lgJ39"}],"emhZI":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("hjEE9") + "Soile_Kick_Rvb3.94ae5133.wav" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"lgJ39"}],"i7VpA":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("hjEE9") + "Soile_Kick_Rvb4.f784a0b8.wav" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"lgJ39"}],"8E9aM":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("hjEE9") + "Soile_Kick_Rvb5.099f1425.wav" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"lgJ39"}],"jdfP7":[function(require,module,exports) {
+const _temp0 = require("./Jumpup_Buzzcut_Bass.wav");
+const _temp1 = require("./SCRATCHY_FUCKSEQUENCE_1.wav");
+const _temp2 = require("./SCRATCHY_FUCKSEQUENCE_2.wav");
+const _temp3 = require("./SCRATCHY_FUCKSEQUENCE_3.wav");
+const _temp4 = require("./SCRATCHY_FUCKSEQUENCE_4.wav");
+const _temp5 = require("./SCRATCHY_FUCKSEQUENCE_5.wav");
+const _temp6 = require("./SCRATCHY_FUCKSEQUENCE_6.wav");
+const _temp7 = require("./SCRATCHY_FUCKSEQUENCE_7.wav");
+const _temp8 = require("./SCRATCHY_FUCKTONE_1.wav");
+const _temp9 = require("./SCRATCHY_FUCKTONE_10.wav");
+const _temp10 = require("./SCRATCHY_FUCKTONE_11.wav");
+const _temp11 = require("./SCRATCHY_FUCKTONE_12.wav");
+const _temp12 = require("./SCRATCHY_FUCKTONE_13.wav");
+const _temp13 = require("./SCRATCHY_FUCKTONE_2.wav");
+const _temp14 = require("./SCRATCHY_FUCKTONE_3.wav");
+const _temp15 = require("./SCRATCHY_FUCKTONE_4.wav");
+const _temp16 = require("./SCRATCHY_FUCKTONE_5.wav");
+const _temp17 = require("./SCRATCHY_FUCKTONE_6.wav");
+const _temp18 = require("./SCRATCHY_FUCKTONE_7.wav");
+const _temp19 = require("./SCRATCHY_FUCKTONE_8.wav");
+const _temp20 = require("./SCRATCHY_FUCKTONE_9.wav");
+module.exports = {
+    "Jumpup_Buzzcut_Bass": _temp0,
+    "SCRATCHY_FUCKSEQUENCE_1": _temp1,
+    "SCRATCHY_FUCKSEQUENCE_2": _temp2,
+    "SCRATCHY_FUCKSEQUENCE_3": _temp3,
+    "SCRATCHY_FUCKSEQUENCE_4": _temp4,
+    "SCRATCHY_FUCKSEQUENCE_5": _temp5,
+    "SCRATCHY_FUCKSEQUENCE_6": _temp6,
+    "SCRATCHY_FUCKSEQUENCE_7": _temp7,
+    "SCRATCHY_FUCKTONE_1": _temp8,
+    "SCRATCHY_FUCKTONE_10": _temp9,
+    "SCRATCHY_FUCKTONE_11": _temp10,
+    "SCRATCHY_FUCKTONE_12": _temp11,
+    "SCRATCHY_FUCKTONE_13": _temp12,
+    "SCRATCHY_FUCKTONE_2": _temp13,
+    "SCRATCHY_FUCKTONE_3": _temp14,
+    "SCRATCHY_FUCKTONE_4": _temp15,
+    "SCRATCHY_FUCKTONE_5": _temp16,
+    "SCRATCHY_FUCKTONE_6": _temp17,
+    "SCRATCHY_FUCKTONE_7": _temp18,
+    "SCRATCHY_FUCKTONE_8": _temp19,
+    "SCRATCHY_FUCKTONE_9": _temp20
+};
+
+},{"./Jumpup_Buzzcut_Bass.wav":"dd2Gi","./SCRATCHY_FUCKSEQUENCE_1.wav":"7hDhr","./SCRATCHY_FUCKSEQUENCE_2.wav":"9xW9S","./SCRATCHY_FUCKSEQUENCE_3.wav":"lW3gX","./SCRATCHY_FUCKSEQUENCE_4.wav":"bvxVh","./SCRATCHY_FUCKSEQUENCE_5.wav":"2uxKT","./SCRATCHY_FUCKSEQUENCE_6.wav":"eJcvk","./SCRATCHY_FUCKSEQUENCE_7.wav":"d70qc","./SCRATCHY_FUCKTONE_1.wav":"jYnqs","./SCRATCHY_FUCKTONE_10.wav":"duwCa","./SCRATCHY_FUCKTONE_11.wav":"aNDF5","./SCRATCHY_FUCKTONE_12.wav":"eBDPH","./SCRATCHY_FUCKTONE_13.wav":"13e89","./SCRATCHY_FUCKTONE_2.wav":"1X0B6","./SCRATCHY_FUCKTONE_3.wav":"85lvr","./SCRATCHY_FUCKTONE_4.wav":"eGlEA","./SCRATCHY_FUCKTONE_5.wav":"hFFKq","./SCRATCHY_FUCKTONE_6.wav":"hyaVz","./SCRATCHY_FUCKTONE_7.wav":"bZSjq","./SCRATCHY_FUCKTONE_8.wav":"1TS8W","./SCRATCHY_FUCKTONE_9.wav":"7xY2R"}],"dd2Gi":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("hjEE9") + "Jumpup_Buzzcut_Bass.9c8608d0.wav" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"lgJ39"}],"7hDhr":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("hjEE9") + "SCRATCHY_FUCKSEQUENCE_1.41a8a891.wav" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"lgJ39"}],"9xW9S":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("hjEE9") + "SCRATCHY_FUCKSEQUENCE_2.66948119.wav" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"lgJ39"}],"lW3gX":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("hjEE9") + "SCRATCHY_FUCKSEQUENCE_3.395d59f1.wav" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"lgJ39"}],"bvxVh":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("hjEE9") + "SCRATCHY_FUCKSEQUENCE_4.669064fa.wav" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"lgJ39"}],"2uxKT":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("hjEE9") + "SCRATCHY_FUCKSEQUENCE_5.12ab7971.wav" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"lgJ39"}],"eJcvk":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("hjEE9") + "SCRATCHY_FUCKSEQUENCE_6.7fcf10b1.wav" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"lgJ39"}],"d70qc":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("hjEE9") + "SCRATCHY_FUCKSEQUENCE_7.8a0bae84.wav" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"lgJ39"}],"jYnqs":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("hjEE9") + "SCRATCHY_FUCKTONE_1.b3b007b9.wav" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"lgJ39"}],"duwCa":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("hjEE9") + "SCRATCHY_FUCKTONE_10.d91e24c9.wav" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"lgJ39"}],"aNDF5":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("hjEE9") + "SCRATCHY_FUCKTONE_11.9b9168fd.wav" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"lgJ39"}],"eBDPH":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("hjEE9") + "SCRATCHY_FUCKTONE_12.e7624ec6.wav" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"lgJ39"}],"13e89":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("hjEE9") + "SCRATCHY_FUCKTONE_13.75a765bf.wav" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"lgJ39"}],"1X0B6":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("hjEE9") + "SCRATCHY_FUCKTONE_2.431190f3.wav" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"lgJ39"}],"85lvr":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("hjEE9") + "SCRATCHY_FUCKTONE_3.b075a565.wav" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"lgJ39"}],"eGlEA":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("hjEE9") + "SCRATCHY_FUCKTONE_4.ddada20e.wav" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"lgJ39"}],"hFFKq":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("hjEE9") + "SCRATCHY_FUCKTONE_5.fc79a413.wav" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"lgJ39"}],"hyaVz":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("hjEE9") + "SCRATCHY_FUCKTONE_6.b4f3637b.wav" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"lgJ39"}],"bZSjq":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("hjEE9") + "SCRATCHY_FUCKTONE_7.71cbd00b.wav" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"lgJ39"}],"1TS8W":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("hjEE9") + "SCRATCHY_FUCKTONE_8.fefaf5c1.wav" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"lgJ39"}],"7xY2R":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("hjEE9") + "SCRATCHY_FUCKTONE_9.203792f7.wav" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"lgJ39"}],"j7495":[function(require,module,exports) {
+const _temp0 = require("./Acid_Bath.wav");
+const _temp1 = require("./ALARMIC_REV_STRING_RYTHYM_LINE.wav");
+const _temp2 = require("./Corpus_Sand_Tones.wav");
+const _temp3 = require("./Creepy_Jungle_Bells_150BPM.wav");
+const _temp4 = require("./Electric_Lung.wav");
+const _temp5 = require("./GUIT_FUCKTONE_1.wav");
+const _temp6 = require("./GUIT_FUCKTONE_2.wav");
+const _temp7 = require("./GUIT_FUCKTONE_3.wav");
+const _temp8 = require("./GUIT_FUCKTONE_4.wav");
+const _temp9 = require("./GUIT_FUCKTONE_5.wav");
+const _temp10 = require("./Metallic_Beam_Pad_C#MINOR.wav");
+const _temp11 = require("./Metallic_Beam_Pad_D#MINOR.wav");
+const _temp12 = require("./PEBBLE_DRONE_01.wav");
+module.exports = {
+    "Acid_Bath": _temp0,
+    "ALARMIC_REV_STRING_RYTHYM_LINE": _temp1,
+    "Corpus_Sand_Tones": _temp2,
+    "Creepy_Jungle_Bells_150BPM": _temp3,
+    "Electric_Lung": _temp4,
+    "GUIT_FUCKTONE_1": _temp5,
+    "GUIT_FUCKTONE_2": _temp6,
+    "GUIT_FUCKTONE_3": _temp7,
+    "GUIT_FUCKTONE_4": _temp8,
+    "GUIT_FUCKTONE_5": _temp9,
+    "Metallic_Beam_Pad_C#MINOR": _temp10,
+    "Metallic_Beam_Pad_D#MINOR": _temp11,
+    "PEBBLE_DRONE_01": _temp12
+};
+
+},{"./Acid_Bath.wav":"9GYrt","./ALARMIC_REV_STRING_RYTHYM_LINE.wav":"3PXh2","./Corpus_Sand_Tones.wav":"7eOEe","./Creepy_Jungle_Bells_150BPM.wav":"bC69t","./Electric_Lung.wav":"b8Ht1","./GUIT_FUCKTONE_1.wav":"kd6oO","./GUIT_FUCKTONE_2.wav":"eC2LM","./GUIT_FUCKTONE_3.wav":"5YExS","./GUIT_FUCKTONE_4.wav":"3fCFI","./GUIT_FUCKTONE_5.wav":"8wPWp","./Metallic_Beam_Pad_C#MINOR.wav":"7mXza","./Metallic_Beam_Pad_D#MINOR.wav":"e36Uu","./PEBBLE_DRONE_01.wav":"gA0Ng"}],"9GYrt":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("hjEE9") + "Acid_Bath.04ff3b5a.wav" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"lgJ39"}],"3PXh2":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("hjEE9") + "ALARMIC_REV_STRING_RYTHYM_LINE.d8013737.wav" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"lgJ39"}],"7eOEe":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("hjEE9") + "Corpus_Sand_Tones.c927318e.wav" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"lgJ39"}],"bC69t":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("hjEE9") + "Creepy_Jungle_Bells_150BPM.0811adfd.wav" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"lgJ39"}],"b8Ht1":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("hjEE9") + "Electric_Lung.003ba568.wav" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"lgJ39"}],"kd6oO":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("hjEE9") + "GUIT_FUCKTONE_1.6ae8cb31.wav" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"lgJ39"}],"eC2LM":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("hjEE9") + "GUIT_FUCKTONE_2.57d7bd6e.wav" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"lgJ39"}],"5YExS":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("hjEE9") + "GUIT_FUCKTONE_3.684f869d.wav" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"lgJ39"}],"3fCFI":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("hjEE9") + "GUIT_FUCKTONE_4.b74c3c86.wav" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"lgJ39"}],"8wPWp":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("hjEE9") + "GUIT_FUCKTONE_5.54f9aa48.wav" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"lgJ39"}],"7mXza":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("hjEE9") + "Metallic_Beam_Pad_C#MINOR.3e4914bf.wav" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"lgJ39"}],"e36Uu":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("hjEE9") + "Metallic_Beam_Pad_D#MINOR.a6e4a73b.wav" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"lgJ39"}],"gA0Ng":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("hjEE9") + "PEBBLE_DRONE_01.0fa4776a.wav" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"lgJ39"}],"dIKiH":[function(require,module,exports) {
 module.exports = JSON.parse('{"name":"pads","version":"0.1.10","description":"","scripts":{"dev":"parcel serve -p 2000 ./src/index.html","build":"parcel build --no-cache ./src/index.html"},"author":"kbbs","license":"ISC","dependencies":{"@vertx/auth":"^1.0.0-preview.1","@vertx/jsx":"^1.0.0","babylonjs":"^5.27.0","babylonjs-gui":"^5.27.0","com.visr-vr.vertex.jsclient":"^0.3.2-dev0","parcel":"^2.7.0","soundcloud":"^3.3.2","toastr":"^2.1.4","tone":"^14.7.77","uuid":"^9.0.0"},"devDependencies":{"@parcel/resolver-glob":"^2.7.0","@parcel/transformer-sass":"^2.7.0","@parcel/transformer-typescript-tsc":"^2.7.0","@types/node":"^18.8.3"}}');
 
 },{}]},["93See","l4cos"], "l4cos", "parcelRequire9a2a")
