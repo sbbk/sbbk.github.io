@@ -1,326 +1,55 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <!-- Stylesheets -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/style.css">
-
-<style>
-
-@font-face {
-    font-family: tiamat medium;
-    src: url("/font/tiamatmedium.woff") format("woff"); /* IE6-IE8 */
-     }
-@media all {
-
-.container {display: flex; flex-wrap:wrap;}
-.logocontain {width:100px; display: inline-block;}
-.logo {width:100%;}
-.banner {width:100%;}
-.thumb {width:100%;}
-.headtext {font-size:1.4rem; font-family: 'tiamat medium', sans-serif;font-weight: 900;font-style: italic; cursor: help;}
-.supportext {font-size:1rem; font-family: 'Roboto', sans-serif; margin-bottom:20px;}
-.infotext {font-family: 'Roboto', sans-serif; color:#6d7680; font-size:0.8rem;}
-.iteminfo {font-family: 'Roboto', sans-serif; color:#6d7680; font-size:0.7rem; position: fixed; bottom:10px; left:10px;}
-.links {font-family: 'Roboto', sans-serif; color:#6d7680; font-size:1em;margin-bottom:10px; display: block;}
-a {text-decoration: none; color:#6d7680;}
-
-}
-
-/* Menu */
-.menu-cover {
-    background: var(--yellow);
-    width:100vw;
-    height:100vh;
-    width:0px;
-    overflow: hidden;
-    z-index:50;
-    position:absolute;
-    transition: all 0.3s cubic-bezier(1, -0.02, 0.58, 1);
-    box-shadow:0px 0px 21px 1px rgba(0,0,0,0.5);
-    filter:hue-rotate(0deg);
-    animation: rotate 120s infinite
-}
-
-.show-menu {
-    width:100vw;
-}
-
-.menu-left {
-    height: 100vh;
-    align-items: center;
-    display: flex;
-}
-
-.main-content {
-    height: 100vh;
-    justify-content: center;
-    align-items: center;
-    display: flex;
-    opacity:0;
-}
-
-.menu-item-wrapper {
-    transform: translateX(0px);
-    opacity:1;
-    padding-left:5rem;
-}
-
-
-.menu-item {
-    cursor: pointer;
-    transition: all 0.1s cubic-bezier(1, -0.02, 0.58, 1);
-}
-
-.menu-text {
-    transition: font-size 0.2s;
-}
-
-.menu-item:hover {
-    transform: translateX(5px);
-}
-
-@keyframes show-links {
-    0% {opacity:0; transform:translateX(-300px);}
-    50% {opacity:1;}
-    100% {opacity:1; transform:translateX(0px);}
-}
-
-@keyframes hide-links {
-    0% {opacity:1;}
-    50% {opacity:0;}
-    100% {opacity:0; transform:translateX(-300px);}
-}
-
-@keyframes show-content {
-    0% {opacity:0; transform:translateX(-200px);}
-    50% {opacity:0;}
-    100% {opacity:1; transform:translateX(0px);}
-}
-
-@keyframes hide-content {
-    0% {opacity:1;}
-    10% {opacity:0;}
-    100% {opacity:0; transform:translateX(-200px);}
-}
-
-.links-animator {
-    animation: show-links 0.8s;
-    animation-iteration-count: 1;
-    --moz-animation-delay: 2s;
-}
-
-.links-hider {
-    animation: hide-links 0.8s;
-    animation-iteration-count: 1;
-}
-
-.active > h1 {
-    font-size:4rem;
-}
-
-
-/* Content Styles */
-.primary-row {
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-}
-
-.hero-img {
-    max-width: 100%;
-}
-
-.title {
-    font-size:4rem;
-}
-
-.sub-text {
-    letter-spacing:2px;
-}
-
-.content-animator {
-    animation: show-content 0.7s;
-    animation-iteration-count: 1;
-    --moz-animation-delay: 1s;
-}
-
-.content-hider {
-    animation: hide-content 0.7s;
-    animation-iteration-count: 1;
-}
-
-.content-animated {
-    opacity:1;
-}
-
-.content-hidden {
-    opacity:0;
-}
-
-/* Projects Grid */
-
-.grid {
-    display: grid;
-    grid-template-columns: 33.3% 33.3% 33.3%;
-    grid-template-rows:auto auto auto;
-}
-
-.g1 {grid-column: 1 / span 1;grid-row: 1 / span 1;}
-.g2 {grid-column: 2 / span 1;grid-row: 1 / span 1;}
-.g3 {grid-column: 3 / span 1;grid-row: 1 / span 1;}
-.g4 {grid-column: 1 / span 1;grid-row: 2 / span 1;}
-.g5 {grid-column: 2 / span 1;grid-row: 2 / span 1;}
-.g6 {grid-column: 3 / span 1;grid-row: 2 / span 1;}
-
-
-
-
-    </style>
-
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/index.2e8c441c.css">
+    <link href="/index.7902fefb.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200;500;700&display=swap" rel="stylesheet"> 
+    <link rel="icon" type="image/x-icon" href="/favicon.824cf0c5.ico">
+    <title>Pads</title>
 </head>
-
-
-<body class="">
-    <a onclick="openMenu()">
-    <div class="navigation-container">
-        <svg id="burger-menu" class="burger-menu" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-            <defs>
-              <style>
-                .cls-1 {
-                  fill: none;
-                  stroke: #000;
-                  stroke-linecap: round;
-                  stroke-miterlimit: 10;
-                  stroke-width: 15px;
-                }
-              </style>
-            </defs>
-            <g id="B">
-              <line class="cls-1" x1="12.11" y1="82.84" x2="87.89" y2="82.84"/>
-            </g>
-            <g id="M">
-              <line class="cls-1" x1="12.11" y1="50" x2="87.89" y2="50"/>
-            </g>
-            <g id="T">
-              <line class="cls-1" x1="12.11" y1="17.16" x2="87.89" y2="17.16"/>
-            </g>
-          </svg>
-    </div>
-    </a>
-    <div id="menu-cover" class="menu-cover">
-        <div class="row">
-            <div class="col-lg-6 col-sm-12 menu-left">
-                <div id="menu-item-wrapper" class="menu-item-wrapper">
-                    <div id="1" onClick="makeactive(this.id)" class="menu-item active"><h1 class="menu-text">Bio</h1></div>
-                    <div id="2" onClick="makeactive(this.id)" class="menu-item"><h1 class="menu-text">Projects</h1></div>
-                    <div id="3" onClick="makeactive(this.id)" class="menu-item"><h1 class="menu-text">Specs</h1></div>
-                    <div id="4" onClick="makeactive(this.id)" class="menu-item"><h1 class="menu-text">Contact</h1></div>
-                </div>
+<body style="overflow: hidden">
+    <div class="top-bar"><img src="/logo.8bb9af93.svg" style="height: 3vh; margin: 10px" alt="Pads Logo"><div style="text-align: right; flex-grow: 1; margin-right: 10px"><h3 id="version-number"></h3></div></div>
+    <div style="width: 100vw; height: 90vh; display: flex">
+        <!-- <canvas id="babylon-canvas" style="width:300px;height:300px"></canvas> -->
+        <div id="main-container" class="main d-flex" style="width: 50%; height: 100%">
+        </div>
+        <div id="right-wrapper">
+            <div id="right-button-wrapper" class="d-flex">
+                <button id="context-button-show" type="button" style="background: #fff !important; border: none !important">Item Context</button>
+                <button id="resource-button-show" type="button" style="background: #fff !important; border: none !important" class="inactive">Resource Browser</button>
+            </div>
+            <div id="browser-wrapper" class="d-none">
 
             </div>
-            <div class="col-lg-4 col-sm-12">
-                <div id="main-content" class="main-content">
-                    <div id="1_content" class="content-block d-none d-block">
-                        <h6>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</h6>
-                    </div>
-                    <div id="2_content" class="content-block d-none">
-                        <h3>What is work</h3>
-                        <div class="grid">
-                            <div class="g1"><img src="/img/folder.svg"></div>
-                            <div class="g2"><img src="/img/folder.svg"></div>
-                            <div class="g3"><img src="/img/folder.svg"></div>
-                            <div class="g4"><img src="/img/folder.svg"></div>
-                            <div class="g5"><img src="/img/folder.svg"></div>
-                            <div class="g6"><img src="/img/folder.svg"></div>
+            <div id="context-wrapper">
+                <div id="context-container" class="context">
+                    <div class="pad-context d-flex" style="flex-direction: column; justify-content: center; align-items: center">
+                        <div class="logo-wrapper-3d" style="margin-bottom: 2rem">
+                            <img class="front" src="/logo.8bb9af93.svg" style="width: 100%; height: 100%; backface-visibility: hidden; position: absolute; transform: translateZ(45px)" alt="Pads Logo">
+                            <img class="back" src="/logo.8bb9af93.svg" style="width: 100%; height: 100%; opacity: .5; backface-visibility: hidden; position: absolute; transform: rotateY(180deg)translateZ(45px)" alt="Pads Logo">
+                            <img class="right" src="/logo.8bb9af93.svg" style="width: 100%; height: 100%; opacity: .5; backface-visibility: hidden; position: absolute; transform: rotateY(90deg)translateZ(45px)" alt="Pads Logo">
+                            <img class="left" src="/logo.8bb9af93.svg" style="width: 100%; height: 100%; backface-visibility: hidden; position: absolute; transform: rotateY(-90deg)translateZ(45px)" alt="Pads Logo">
+                            <img class="top" src="/logo.8bb9af93.svg" style="width: 100%; height: 100%; opacity: .5; backface-visibility: hidden; position: absolute; transform: rotateX(90deg)translateZ(45px)" alt="Pads Logo">
+                            <img class="bottom" src="/logo.8bb9af93.svg" style="width: 100%; height: 100%; backface-visibility: hidden; position: absolute; transform: rotateX(-90deg)translateZ(45px)" alt="Pads Logo">
                         </div>
+                        <h2>Welcome. Select a Pad or Drag an Audio File to a pad to begin.</h2>
                     </div>
-                    <div id="3_content" class="content-block d-none">
-                        
-                    </div>
-                    <div id="4_content" class="content-block d-none">
-                        <h3>Instagram : /soundboybetterknow</h3>
-                        <h3>Twitch : /soundboybetterknow</h3>
-                    </div>
-
                 </div>
             </div>
-        </div>
-    </div>
-    <div class="container-fluid main-bg hue-rotate">
-        <div class="container">
-            <div class="row primary-row">
-                <div class="col-lg-6">
-                    <img class="hero-img" src="/img/smiley.svg">
-                </div>
-                <div class="col-lg-6">
-                    <h1 class="title text-center">George Ito</h1>
-                    <h6 class="sub-text text-center">FRONT-END / USER FACING</h6>
-                    <a href="/desktop.html"><div class="desktop-button sub-text">CLICK THIS</div></a>
-                </div>
-            </div>
-        </div>
-    </div>
 
+        </div>
+
+    </div>
+    
+    
+    <script src="/index.da9e0195.js"></script>
+    <script src="/index.96e2502d.js" defer=""></script>
+    <script src="/index.f2535817.js"></script>
 
 </body>
-
-<footer>
-    <script>
-        function openMenu() {
-        var menu = document.getElementById("menu-cover");
-        var burger = document.getElementById("burger-menu");
-        var links = document.getElementById("menu-item-wrapper");
-        var content = document.getElementById("main-content");
-
-        if (menu.classList.contains('show-menu')) 
-        {
-        menu.classList.remove('show-menu');
-        burger.classList.remove('rotate-menu');
-        links.classList.remove('links-animator');
-        links.classList.add('links-hider');
-
-        content.classList.remove('content-animator');
-        content.classList.add('content-hider');
-        content.classList.remove('content-hidden');
-
-        }
-
-        else {
-        menu.classList.add('show-menu');
-        burger.classList.add('rotate-menu');
-        links.classList.remove('links-hider');
-        links.classList.add('links-animator');
-
-        content.classList.remove('content-hider');
-        content.classList.add('content-animator');
-        content.classList.add('content-animated');
-
-
-        }
-        }
-    </script>
-    <script>
-       function makeactive(active_link) {
-        var menuitems = document.getElementsByClassName('menu-item');
-        var activeitem = document.getElementById(active_link);
-        var contents = document.getElementsByClassName('content-block');
-        var activecontent = document.getElementById(active_link + '_content');
-        var i;
-        var l;
-
-        for (i = 0; i < menuitems.length; i++) {
-            menuitems[i].classList.remove('active');
-        }
-
-        for (l = 0; l < contents.length; l++) {
-            contents[l].classList.remove('d-block');
-        }
-
-        activeitem.classList.add('active');
-        activecontent.classList.add('d-block');
-       }
-
-
-    </script>
-</footer>
 </html>
