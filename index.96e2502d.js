@@ -51416,6 +51416,7 @@ let css = require("../contextMenu/context.css");
 class ResourceBrowser {
     wrapper = document.getElementById("browser-wrapper");
     render(children) {
+        console.warn("Renderin Resource Browser");
         let resourceURLs = Object.values(_mp3);
         let resourceNames = Object.keys(_mp3);
         let resourceObjects = [];
@@ -51460,7 +51461,7 @@ class ResourceBrowser {
         for(let i3 = 0; i3 < phrixDrumsUrl.length; i3++){
             let object3 = {
                 "name": phrixTexNames[i3],
-                "path": phrixBassNames[i3],
+                "path": phrixTexUrl[i3],
                 "tags": [
                     "phrixus",
                     "texture"
@@ -51471,7 +51472,7 @@ class ResourceBrowser {
         let browser = /*#__PURE__*/ (0, _jsx.jsx)("div", {
             __source: {
                 fileName: "src/views/resourceBrowser/resourcebrowser.tsx",
-                lineNumber: 81,
+                lineNumber: 83,
                 columnNumber: 23
             },
             __self: this
@@ -51484,7 +51485,7 @@ class ResourceBrowser {
                 tags: item.tags,
                 __source: {
                     fileName: "src/views/resourceBrowser/resourcebrowser.tsx",
-                    lineNumber: 84,
+                    lineNumber: 86,
                     columnNumber: 32
                 },
                 __self: this
@@ -51503,7 +51504,7 @@ class ResourceItem {
             class: "resource-tags-container",
             __source: {
                 fileName: "src/views/resourceBrowser/resourcebrowser.tsx",
-                lineNumber: 107,
+                lineNumber: 109,
                 columnNumber: 28
             },
             __self: this
@@ -51513,7 +51514,7 @@ class ResourceItem {
                 class: "resource-tag",
                 __source: {
                     fileName: "src/views/resourceBrowser/resourcebrowser.tsx",
-                    lineNumber: 110,
+                    lineNumber: 112,
                     columnNumber: 27
                 },
                 __self: this
@@ -51525,7 +51526,7 @@ class ResourceItem {
             class: "mr-2",
             __source: {
                 fileName: "src/views/resourceBrowser/resourcebrowser.tsx",
-                lineNumber: 114,
+                lineNumber: 116,
                 columnNumber: 26
             },
             __self: this
@@ -51534,7 +51535,7 @@ class ResourceItem {
             class: "resource-item d-flex w-100 justify-between align-center",
             __source: {
                 fileName: "src/views/resourceBrowser/resourcebrowser.tsx",
-                lineNumber: 115,
+                lineNumber: 117,
                 columnNumber: 20
             },
             __self: this
@@ -51542,7 +51543,7 @@ class ResourceItem {
             class: "resource-name",
             __source: {
                 fileName: "src/views/resourceBrowser/resourcebrowser.tsx",
-                lineNumber: 116,
+                lineNumber: 118,
                 columnNumber: 25
             },
             __self: this
@@ -51550,7 +51551,7 @@ class ResourceItem {
             class: "resource-player",
             __source: {
                 fileName: "src/views/resourceBrowser/resourcebrowser.tsx",
-                lineNumber: 119,
+                lineNumber: 121,
                 columnNumber: 25
             },
             __self: this
@@ -51558,7 +51559,7 @@ class ResourceItem {
             controls: true,
             __source: {
                 fileName: "src/views/resourceBrowser/resourcebrowser.tsx",
-                lineNumber: 120,
+                lineNumber: 122,
                 columnNumber: 29
             },
             __self: this
@@ -51566,7 +51567,7 @@ class ResourceItem {
             src: this.url,
             __source: {
                 fileName: "src/views/resourceBrowser/resourcebrowser.tsx",
-                lineNumber: 121,
+                lineNumber: 123,
                 columnNumber: 33
             },
             __self: this
