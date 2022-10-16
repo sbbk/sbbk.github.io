@@ -556,6 +556,7 @@ let Pads;
         static contextWrapper = document.getElementById("context-wrapper");
         static browserToggle = document.getElementById("resource-button-show");
         static browserWrapper = document.getElementById("browser-wrapper");
+        static loadingCover = document.getElementById("loading-cover");
         async initVertex() {
             this._clientID = "1212a395-b812-42de-a5c5-3fcace6b5c80";
             this._redirectURI = "http://localhost:3000/";
@@ -614,7 +615,7 @@ let Pads;
                 class: "pad-array",
                 __source: {
                     fileName: "src/main.tsx",
-                    lineNumber: 91,
+                    lineNumber: 92,
                     columnNumber: 28
                 },
                 __self: this
@@ -626,7 +627,7 @@ let Pads;
                     "data-note": note,
                     __source: {
                         fileName: "src/main.tsx",
-                        lineNumber: 95,
+                        lineNumber: 96,
                         columnNumber: 27
                     },
                     __self: this
@@ -657,6 +658,12 @@ let Pads;
             let v = "v-" + packageJson.version;
             versionElement.innerText = v;
         }
+        static showLoading() {
+            Pads.Application.loadingCover.classList.remove("d-none");
+        }
+        static hideLoading() {
+            Pads.Application.loadingCover.classList.add("d-none");
+        }
         static toggleRightContent(container) {
             if (container == "Context") {
                 Pads.Application.contextToggle.classList.remove("inactive");
@@ -686,7 +693,7 @@ let Pads;
                 activePad: Pads.Application.activePad,
                 __source: {
                     fileName: "src/main.tsx",
-                    lineNumber: 162,
+                    lineNumber: 173,
                     columnNumber: 27
                 },
                 __self: this
@@ -50509,6 +50516,7 @@ class SamplePad {
     async registerFileToPlayer(file) {
         this.currentFile = file;
         let audio = URL.createObjectURL(file);
+        (0, _main.Pads).Application.showLoading();
         // let player = new Tone.Player({
         //     url:audio,
         //     loop:true
@@ -50527,7 +50535,7 @@ class SamplePad {
                 class: "pad-content-name",
                 __source: {
                     fileName: "src/components/samplePad.tsx",
-                    lineNumber: 915,
+                    lineNumber: 916,
                     columnNumber: 24
                 },
                 __self: this
@@ -50552,7 +50560,7 @@ class SamplePad {
         let canvasHolder = /*#__PURE__*/ (0, _jsx.jsx)("div", {
             __source: {
                 fileName: "src/components/samplePad.tsx",
-                lineNumber: 942,
+                lineNumber: 943,
                 columnNumber: 28
             },
             __self: this
@@ -50562,7 +50570,7 @@ class SamplePad {
             class: `default-button ${this.pad.color}`,
             __source: {
                 fileName: "src/components/samplePad.tsx",
-                lineNumber: 945,
+                lineNumber: 946,
                 columnNumber: 43
             },
             __self: this
@@ -50576,7 +50584,7 @@ class SamplePad {
             color: color,
             __source: {
                 fileName: "src/components/samplePad.tsx",
-                lineNumber: 951,
+                lineNumber: 952,
                 columnNumber: 34
             },
             __self: this
@@ -50588,7 +50596,7 @@ class SamplePad {
                 let title = /*#__PURE__*/ (0, _jsx.jsx)("h3", {
                     __source: {
                         fileName: "src/components/samplePad.tsx",
-                        lineNumber: 957,
+                        lineNumber: 958,
                         columnNumber: 29
                     },
                     __self: this
@@ -50596,7 +50604,7 @@ class SamplePad {
                     class: self.pad.color,
                     __source: {
                         fileName: "src/components/samplePad.tsx",
-                        lineNumber: 957,
+                        lineNumber: 958,
                         columnNumber: 39
                     },
                     __self: this
@@ -50629,6 +50637,7 @@ class SamplePad {
                     player.stop();
                 });
                 self.isReady = true;
+                (0, _main.Pads).Application.hideLoading();
             }
         });
     }
