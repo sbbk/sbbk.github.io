@@ -541,7 +541,7 @@ var _jsx = require("@vertx/jsx");
 var _tone = require("tone");
 var _channel = require("./components/Channel");
 var _config = require("./components/Config");
-var _samplePad = require("./components/samplePad");
+var _groupManager = require("./components/groupManager");
 var _resourcebrowser = require("./views/resourceBrowser/resourcebrowser");
 const packageJson = require("../package.json");
 window.AudioContext = window.AudioContext || window.AudioContext;
@@ -557,6 +557,11 @@ let Pads;
         static browserToggle = document.getElementById("resource-button-show");
         static browserWrapper = document.getElementById("browser-wrapper");
         static loadingCover = document.getElementById("loading-cover");
+        static sequencerToggle = document.getElementById("sequencer-button-show");
+        static sequencerWrapper = document.getElementById("sequencer-wrapper");
+        static masterBPMInput = document.getElementById("master-bpm-input");
+        // Sequencing
+        static isRecording = true;
         async initVertex() {
             this._clientID = "1212a395-b812-42de-a5c5-3fcace6b5c80";
             this._redirectURI = "http://localhost:3000/";
@@ -615,7 +620,7 @@ let Pads;
                 class: "pad-array",
                 __source: {
                     fileName: "src/main.tsx",
-                    lineNumber: 92,
+                    lineNumber: 105,
                     columnNumber: 28
                 },
                 __self: this
@@ -627,7 +632,7 @@ let Pads;
                     "data-note": note,
                     __source: {
                         fileName: "src/main.tsx",
-                        lineNumber: 96,
+                        lineNumber: 109,
                         columnNumber: 27
                     },
                     __self: this
@@ -665,23 +670,40 @@ let Pads;
             Pads.Application.loadingCover.classList.add("d-none");
         }
         static toggleRightContent(container) {
+            // let areas = document.querySelectorAll(".primary-area-container");
+            // areas.forEach(area => {
+            //     area.classList.add('d-none')
+            // })
             if (container == "Context") {
                 Pads.Application.contextToggle.classList.remove("inactive");
                 Pads.Application.browserToggle.classList.add("inactive");
                 Pads.Application.contextWrapper.classList.remove("d-none");
                 Pads.Application.browserWrapper.classList.add("d-none");
+                Pads.Application.sequencerToggle.classList.add("inactive");
+                Pads.Application.sequencerWrapper.classList.add("d-none");
             }
             if (container == "Explorer") {
                 Pads.Application.contextToggle.classList.add("inactive");
                 Pads.Application.browserToggle.classList.remove("inactive");
                 Pads.Application.contextWrapper.classList.add("d-none");
                 Pads.Application.browserWrapper.classList.remove("d-none");
+                Pads.Application.sequencerToggle.classList.add("inactive");
+                Pads.Application.sequencerWrapper.classList.add("d-none");
+            }
+            if (container == "Sequencer") {
+                Pads.Application.contextToggle.classList.add("inactive");
+                Pads.Application.browserToggle.classList.add("inactive");
+                Pads.Application.contextWrapper.classList.add("d-none");
+                Pads.Application.browserWrapper.classList.add("d-none");
+                Pads.Application.sequencerToggle.classList.remove("inactive");
+                Pads.Application.sequencerWrapper.classList.remove("d-none");
             }
         }
         async init() {
             let bus = new (0, _channel.MasterBus)();
             Pads.Application.masterChannel = bus.init();
             Pads.Application.masterFFT = bus.FFT;
+            Pads.Application.masterFFTCanvas = bus.FFTCanvas;
             let parent = document.getElementById("main-container");
             Pads.Application.contextToggle.addEventListener("click", ()=>{
                 Pads.Application.toggleRightContent("Context");
@@ -689,21 +711,34 @@ let Pads;
             Pads.Application.browserToggle.addEventListener("click", ()=>{
                 Pads.Application.toggleRightContent("Explorer");
             });
-            console.warn("Init Main");
-            console.error("Init Main");
+            Pads.Application.sequencerToggle.addEventListener("click", ()=>{
+                Pads.Application.toggleRightContent("Sequencer");
+            });
+            let value = parseFloat(Pads.Application.masterBPMInput.value).toFixed(0);
+            _tone.Transport.bpm.value = parseInt(value);
+            Pads.Application.masterBPMInput.addEventListener("change", ()=>{
+                let value = parseFloat(Pads.Application.masterBPMInput.value).toFixed(0);
+                _tone.Transport.bpm.value = parseInt(value);
+                console.warn("[PADS] Setting BPM at ", _tone.Transport.bpm.value);
+            });
+            // [todo] disabled browser for loading time.
             let browser = /*#__PURE__*/ (0, _jsx.jsx)((0, _resourcebrowser.ResourceBrowser), {
                 activePad: Pads.Application.activePad,
                 __source: {
                     fileName: "src/main.tsx",
-                    lineNumber: 175,
+                    lineNumber: 217,
                     columnNumber: 27
                 },
                 __self: this
             });
-            console.log(browser);
-            let groupManager = new (0, _samplePad.GroupManager)(parent);
+            console.warn("[PADS] Initialised Browser.");
+            let groupManager = new (0, _groupManager.GroupManager)(parent);
             let isReady = await groupManager.init();
+            console.warn("[PADS] Initialised Group Manager.");
             if (isReady) groupManager.selectGroup(groupManager.padGroups[0]);
+            window.addEventListener("blur", ()=>{
+                _tone.Transport.stop();
+            });
         }
     }
     Pads1.Application = Application;
@@ -719,7 +754,7 @@ const application = new Pads.Application();
 application.setVersionNumber();
 application.init();
 
-},{"@vertx/auth":"hxvTA","@vertx/jsx":"4ObNr","tone":"2tCfN","./components/Channel":"2P2XU","./components/Config":"czi8U","./components/samplePad":"4Sqbm","./views/resourceBrowser/resourcebrowser":"hGMCQ","../package.json":"dIKiH","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"hxvTA":[function(require,module,exports) {
+},{"@vertx/auth":"hxvTA","@vertx/jsx":"4ObNr","tone":"2tCfN","./components/Channel":"2P2XU","./components/Config":"czi8U","./components/groupManager":"hROPE","./views/resourceBrowser/resourcebrowser":"hGMCQ","../package.json":"dIKiH","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"hxvTA":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "VertexAuth", ()=>n);
@@ -42167,9 +42202,10 @@ var _jsx = require("@vertx/jsx");
 var _patchView = require("../views/patch/patchView");
 var _patchItemView = require("../views/patch/patchItemView");
 class MasterBus {
+    FFTCanvas = document.getElementById("master-fft-canvas");
     init() {
         this.masterChannel = new _tone.Channel().toDestination();
-        this.FFT = new _tone.FFT();
+        this.FFT = new _tone.FFT(64);
         this.masterChannel.connect(this.FFT);
         return this.masterChannel;
     }
@@ -42207,7 +42243,7 @@ class Channel {
             "data-bgcolor": this.color,
             __source: {
                 fileName: "src/components/Channel.tsx",
-                lineNumber: 71,
+                lineNumber: 73,
                 columnNumber: 28
             },
             __self: this
@@ -42221,7 +42257,7 @@ class Channel {
             name: "Volume",
             __source: {
                 fileName: "src/components/Channel.tsx",
-                lineNumber: 77,
+                lineNumber: 79,
                 columnNumber: 29
             },
             __self: this
@@ -42238,7 +42274,7 @@ class Channel {
             "data-bgcolor": this.color,
             __source: {
                 fileName: "src/components/Channel.tsx",
-                lineNumber: 80,
+                lineNumber: 82,
                 columnNumber: 23
             },
             __self: this
@@ -42252,7 +42288,7 @@ class Channel {
             name: "Pan",
             __source: {
                 fileName: "src/components/Channel.tsx",
-                lineNumber: 86,
+                lineNumber: 88,
                 columnNumber: 26
             },
             __self: this
@@ -42263,7 +42299,7 @@ class Channel {
             color: this.color,
             __source: {
                 fileName: "src/components/Channel.tsx",
-                lineNumber: 89,
+                lineNumber: 91,
                 columnNumber: 28
             },
             __self: this
@@ -49674,41 +49710,14 @@ class Config {
     ];
 }
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"4Sqbm":[function(require,module,exports) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"hROPE":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 // Manages groups of PadGroups.
 parcelHelpers.export(exports, "GroupManager", ()=>GroupManager);
-// Manages groups of PadManagers
-parcelHelpers.export(exports, "PadGroup", ()=>PadGroup);
-// Managers an array of pads.
-parcelHelpers.export(exports, "PadManager", ()=>PadManager);
-// Explicit pad item.
-parcelHelpers.export(exports, "Pad", ()=>Pad);
-// Currently only works on player Nodes
-parcelHelpers.export(exports, "EffectsStack", ()=>EffectsStack);
-// [todo]
-parcelHelpers.export(exports, "SynthPad", ()=>SynthPad);
-// Sampler components to be bound to pad.
-parcelHelpers.export(exports, "SamplePad", ()=>SamplePad);
 var _jsx = require("@vertx/jsx");
-var _uuid = require("uuid");
-var _tone = require("tone");
-var _utils = require("./Utils");
-var _waveform = require("./waveform");
 var _main = require("../main");
-var _contextMenu = require("../views/contextMenu/contextMenu");
-var _channel = require("./Channel");
-var _effectsStackView = require("../views/patch/effectsStackView");
-var _patchView = require("../views/patch/patchView");
-let PadModes = [
-    "Single",
-    "PianoRoll"
-];
-let PadComponents = [
-    "Sampler",
-    "Synth"
-];
+var _padGroup = require("./padGroup");
 class GroupManager {
     padGroups = [];
     groupLimit = 4;
@@ -49721,8 +49730,8 @@ class GroupManager {
         this.buttonContainer = /*#__PURE__*/ (0, _jsx.jsx)("div", {
             class: "button-group-group",
             __source: {
-                fileName: "src/components/samplePad.tsx",
-                lineNumber: 51,
+                fileName: "src/components/groupManager.tsx",
+                lineNumber: 22,
                 columnNumber: 32
             },
             __self: this
@@ -49730,7 +49739,7 @@ class GroupManager {
         this.parent.append(this.buttonContainer);
         for(let i = 0; i < this.groupLimit; i++){
             // Create group items
-            let group = new PadGroup(i, this.parent, this.buttonContainer, this.padColors[i]);
+            let group = new (0, _padGroup.PadGroup)(i, this.parent, this.buttonContainer, this.padColors[i]);
             await group.init();
             group.groupButton.onclick = ()=>{
                 this.selectGroup(group);
@@ -49767,7 +49776,8 @@ class GroupManager {
                     });
                     (0, _main.Pads).Application.activeGroup = group;
                     group.groupButton.classList.remove("inactive");
-                    this.render(group);
+                    this.selectGroup(group);
+                    (0, _main.Pads).Application.activeGroup.renderContext();
                 }
             });
         });
@@ -49780,6 +49790,19 @@ class GroupManager {
         group.groupContainer.classList.remove("d-none");
     }
 }
+
+},{"@vertx/jsx":"4ObNr","../main":"l4cos","./padGroup":"c3Fag","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"c3Fag":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+// Manages groups of PadManagers
+parcelHelpers.export(exports, "PadGroup", ()=>PadGroup);
+var _jsx = require("@vertx/jsx");
+var _main = require("../main");
+var _utils = require("./Utils");
+var _padManager = require("./padManager");
+var _channel = require("./Channel");
+var _contextMenu = require("../views/contextMenu/contextMenu");
+var _effectsStack = require("./effectsStack");
 class PadGroup {
     constructor(index, parent, buttonParent, color){
         this.index = index;
@@ -49798,8 +49821,8 @@ class PadGroup {
         this.groupContainer = /*#__PURE__*/ (0, _jsx.jsx)("div", {
             class: `group-container`,
             __source: {
-                fileName: "src/components/samplePad.tsx",
-                lineNumber: 157,
+                fileName: "src/components/padGroup.tsx",
+                lineNumber: 47,
                 columnNumber: 31
             },
             __self: this
@@ -49808,8 +49831,8 @@ class PadGroup {
         this.groupContext = /*#__PURE__*/ (0, _jsx.jsx)("div", {
             class: `pad-context d-none`,
             __source: {
-                fileName: "src/components/samplePad.tsx",
-                lineNumber: 160,
+                fileName: "src/components/padGroup.tsx",
+                lineNumber: 50,
                 columnNumber: 29
             },
             __self: this
@@ -49817,14 +49840,14 @@ class PadGroup {
         // Add channel to context
         this.groupContext.append(defaultUI);
         this.contextContainer.append(this.groupContext);
-        this.padManager = new PadManager(this.groupContainer, this.color);
+        this.padManager = new (0, _padManager.PadManager)(this.groupContainer, this.color);
         this.padManager.channel = this.channel;
         await this.padManager.init();
         this.groupButton = /*#__PURE__*/ (0, _jsx.jsx)("button", {
             class: `group-button inactive ${this.color}`,
             __source: {
-                fileName: "src/components/samplePad.tsx",
-                lineNumber: 169,
+                fileName: "src/components/padGroup.tsx",
+                lineNumber: 59,
                 columnNumber: 28
             },
             __self: this
@@ -49836,8 +49859,8 @@ class PadGroup {
                 item: this.padManager,
                 event: e,
                 __source: {
-                    fileName: "src/components/samplePad.tsx",
-                    lineNumber: 174,
+                    fileName: "src/components/padGroup.tsx",
+                    lineNumber: 64,
                     columnNumber: 27
                 },
                 __self: this
@@ -49864,20 +49887,34 @@ class PadGroup {
     // Move this to a global function.
     initEffectsStack() {
         // [todo] This is absolutely horrid.
-        this.effectsStack = new EffectsStack(this.channel, this.groupContext, (0, _main.Pads).Application.masterChannel, this.color);
+        this.effectsStack = new (0, _effectsStack.EffectsStack)(this.channel, this.groupContext, (0, _main.Pads).Application.masterChannel, this.color);
         this.effectsStack.render();
     }
     async render() {
     //
     }
 }
+
+},{"@vertx/jsx":"4ObNr","../main":"l4cos","./Utils":"5fpwy","./padManager":"hGSBU","./Channel":"2P2XU","../views/contextMenu/contextMenu":"kpiAa","./effectsStack":"7S3vs","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"hGSBU":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+// Managers an array of pads.
+parcelHelpers.export(exports, "PadManager", ()=>PadManager);
+var _tone = require("tone");
+var _jsx = require("@vertx/jsx");
+var _main = require("../main");
+var _pad = require("./pad");
+let PadModes = [
+    "Single",
+    "PianoRoll"
+];
 class PadManager {
     type = "PadManager";
     singlePadContainer = /*#__PURE__*/ (0, _jsx.jsx)("div", {
         class: "pad-array standard-sort",
         __source: {
-            fileName: "src/components/samplePad.tsx",
-            lineNumber: 225,
+            fileName: "src/components/padManager.tsx",
+            lineNumber: 19,
             columnNumber: 38
         },
         __self: this
@@ -49887,8 +49924,8 @@ class PadManager {
         class: "pad-array reverse-sort",
         style: "display:none",
         __source: {
-            fileName: "src/components/samplePad.tsx",
-            lineNumber: 227,
+            fileName: "src/components/padManager.tsx",
+            lineNumber: 21,
             columnNumber: 37
         },
         __self: this
@@ -49929,8 +49966,8 @@ class PadManager {
                 id: `${mode}-mode-toggle`,
                 class: `default-button ${this.color} mode-toggle inactive d-none`,
                 __source: {
-                    fileName: "src/components/samplePad.tsx",
-                    lineNumber: 251,
+                    fileName: "src/components/padManager.tsx",
+                    lineNumber: 45,
                     columnNumber: 30
                 },
                 __self: this
@@ -49957,7 +49994,7 @@ class PadManager {
         return true;
     }
     addPad(index, name, component) {
-        let pad = new Pad(index, component, this.singlePadContainer, name, this.channel, this.color, this);
+        let pad = new (0, _pad.Pad)(index, component, this.singlePadContainer, name, this.channel, this.color, this);
         pad.init();
         this.singlePadArray.push(pad);
         this.bindPad(pad);
@@ -49969,14 +50006,13 @@ class PadManager {
         });
         this.singlePadArray.forEach((pad, index)=>{
             document.addEventListener("keypress", (e)=>{
-                console.log(e.code);
                 if (e.code == this.keyList[index]) {
                     (0, _main.Pads).Application.toggleRightContent("Context");
                     let pad = (0, _main.Pads).Application.activeGroup.padManager.singlePadArray[index];
                     (0, _main.Pads).Application.activePad = pad;
                     this.render(pad);
                     if (!(0, _main.Pads).Application.activePad.activeComponent) (0, _main.Pads).Application.toggleRightContent("Explorer");
-                    else (0, _main.Pads).Application.toggleRightContent("Context");
+                    else (0, _main.Pads).Application.toggleRightContent("Sequencer");
                     pad.renderContext();
                     if (!pad.activeComponent) return;
                     if (!pad.activeComponent.isReady) return;
@@ -50062,8 +50098,8 @@ class PadManager {
                     let pianoPad = /*#__PURE__*/ (0, _jsx.jsx)("button", {
                         class: "pad",
                         __source: {
-                            fileName: "src/components/samplePad.tsx",
-                            lineNumber: 429,
+                            fileName: "src/components/padManager.tsx",
+                            lineNumber: 222,
                             columnNumber: 36
                         },
                         __self: this
@@ -50086,6 +50122,24 @@ class PadManager {
         }
     }
 }
+
+},{"tone":"2tCfN","@vertx/jsx":"4ObNr","../main":"l4cos","./pad":"2KHVa","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"2KHVa":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+// Explicit pad item.
+parcelHelpers.export(exports, "Pad", ()=>Pad);
+var _effectsStack = require("./effectsStack");
+var _uuid = require("uuid");
+var _jsx = require("@vertx/jsx");
+var _utils = require("./Utils");
+var _sampler = require("./sampler");
+var _contextMenu = require("../views/contextMenu/contextMenu");
+var _channel = require("./Channel");
+var _main = require("../main");
+let PadComponents = [
+    "Sampler",
+    "Synth"
+];
 class Pad {
     type = "Pad";
     contextContainer = document.getElementById("context-container");
@@ -50104,8 +50158,8 @@ class Pad {
     renderPad() {
         this.activeComponentContext = /*#__PURE__*/ (0, _jsx.jsx)("div", {
             __source: {
-                fileName: "src/components/samplePad.tsx",
-                lineNumber: 492,
+                fileName: "src/components/pad.tsx",
+                lineNumber: 59,
                 columnNumber: 39
             },
             __self: this
@@ -50113,8 +50167,8 @@ class Pad {
         this.padContext = /*#__PURE__*/ (0, _jsx.jsx)("div", {
             class: "pad-context d-none",
             __source: {
-                fileName: "src/components/samplePad.tsx",
-                lineNumber: 493,
+                fileName: "src/components/pad.tsx",
+                lineNumber: 60,
                 columnNumber: 27
             },
             __self: this
@@ -50130,8 +50184,8 @@ class Pad {
             class: "slider",
             style: "width:10%",
             __source: {
-                fileName: "src/components/samplePad.tsx",
-                lineNumber: 503,
+                fileName: "src/components/pad.tsx",
+                lineNumber: 70,
                 columnNumber: 28
             },
             __self: this
@@ -50149,8 +50203,8 @@ class Pad {
                 setVolume(e);
             },
             __source: {
-                fileName: "src/components/samplePad.tsx",
-                lineNumber: 503,
+                fileName: "src/components/pad.tsx",
+                lineNumber: 70,
                 columnNumber: 66
             },
             __self: this
@@ -50159,8 +50213,8 @@ class Pad {
         let name = /*#__PURE__*/ (0, _jsx.jsx)("h3", {
             class: "pad-content-name",
             __source: {
-                fileName: "src/components/samplePad.tsx",
-                lineNumber: 505,
+                fileName: "src/components/pad.tsx",
+                lineNumber: 72,
                 columnNumber: 20
             },
             __self: this
@@ -50169,8 +50223,8 @@ class Pad {
             class: "content",
             style: "width:90%;height: 100%;display: flex;justify-content: center;align-items: center;",
             __source: {
-                fileName: "src/components/samplePad.tsx",
-                lineNumber: 506,
+                fileName: "src/components/pad.tsx",
+                lineNumber: 73,
                 columnNumber: 23
             },
             __self: this
@@ -50182,8 +50236,8 @@ class Pad {
             "data-key": "",
             style: "display:flex; padding:0px",
             __source: {
-                fileName: "src/components/samplePad.tsx",
-                lineNumber: 508,
+                fileName: "src/components/pad.tsx",
+                lineNumber: 75,
                 columnNumber: 25
             },
             __self: this
@@ -50197,13 +50251,13 @@ class Pad {
         padButton.addEventListener("dragenter", (e)=>{
             if (hasAppended == true) return;
             hasAppended = true;
-            let icon = new URL(require("50dfaed75ab18c57"));
+            let icon = new URL(require("ddd69d40aa882677"));
             //let input = <input style="display:none" type="file"></input> as HTMLInputElement;
             let fileDrop = /*#__PURE__*/ (0, _jsx.jsx)("label", {
                 class: "file-drop",
                 __source: {
-                    fileName: "src/components/samplePad.tsx",
-                    lineNumber: 526,
+                    fileName: "src/components/pad.tsx",
+                    lineNumber: 93,
                     columnNumber: 28
                 },
                 __self: this
@@ -50233,9 +50287,8 @@ class Pad {
                 //         padIndex++
                 //     })
                 // }
-                let sampler = new SamplePad(this, this.channel);
+                let sampler = new (0, _sampler.SamplePad)(this, this.channel);
                 sampler.addComponent(this.HTMLElement, this.activeComponentContext);
-                this.activeComponent = sampler;
                 this.isReady = true;
                 hasAppended = false;
                 fileDrop.remove();
@@ -50273,25 +50326,52 @@ class Pad {
             context.classList.add("d-none");
         });
         this.padContext.classList.remove("d-none");
+        if (this.sequencer) this.sequencer.renderView();
     }
     initContext() {}
-    play() {
+    play(time) {
+        // if (Pads.Application.isRecording && Tone.Transport.now() > 0.1) {
+        //     this.sequencer.updateSequence(this.sequencer.count,"loaded");
+        //     return;
+        // }
         this.activeComponent.play();
         this.isPlaying = true;
-    // Tone.Transport.loop = true;
-    // Tone.Transport.setLoopPoints(0,0.1);
-    // // Tone.Transport.loopStart = 0;
-    // // Tone.Transport.loopEnd = 0.2;
-    // Tone.Transport.start()
-    // Tone.Transport.schedule(function(time){
-    //     console.log(Pads.Application.masterFFT.getValue())
-    //     // console.log(FFT.getValue());
-    // }, 0);
+        let color = (0, _utils.Utils).getColorValue(this.color);
+        this.isPlaying = true;
+    // Tone.Transport.loopStart = 0;
+    // Tone.Transport.loopEnd = 0.2;
+    //console.log(Pads.Application.masterFFT.getValue())
+    // Tone.Draw.schedule(function() {
+    //     let context = Pads.Application.masterFFTCanvas.getContext('2d');
+    //     let canvasW = Pads.Application.masterFFTCanvas.getBoundingClientRect().width;
+    //     let canvasH = Pads.Application.masterFFTCanvas.getBoundingClientRect().height;
+    //     let sampleValues = Pads.Application.masterFFT.getValue();
+    //     let sampleSize = 64;
+    //     let sampleWidth = canvasW / sampleSize
+    //     let width = sampleWidth;
+    //     context.clearRect(0,0,canvasW,canvasH);
+    //     sampleValues.forEach(value => {
+    //         width = width + sampleWidth;
+    //         let val = Utils.getScaledValue(value,-100,0,0,canvasH);
+    //         let unit = val.toFixed(1);
+    //         let height = canvasH - unit;
+    //         //let pos = parseInt(Math.abs(val).toFixed(1));
+    //         context.fillStyle = color;
+    //         context.fillRect(width,height,sampleWidth,canvasH);
+    //     })
+    // },time)
     }
     stop() {
         this.activeComponent.stop();
         this.isPlaying = false;
-        _tone.Transport.stop();
+    // Tone.Transport.stop(Tone.now());
+    // setTimeout(() => {
+    //     let context = Pads.Application.masterFFTCanvas.getContext('2d');
+    //     let canvasW = Pads.Application.masterFFTCanvas.getBoundingClientRect().width;
+    //     let canvasH = Pads.Application.masterFFTCanvas.getBoundingClientRect().height;
+    //     context.clearRect(0,0,canvasW,canvasH);
+    //     console.log("Clear")
+    // }, 100);
     }
     init() {
         this.initChannel();
@@ -50304,8 +50384,8 @@ class Pad {
                 item: this,
                 event: e,
                 __source: {
-                    fileName: "src/components/samplePad.tsx",
-                    lineNumber: 642,
+                    fileName: "src/components/pad.tsx",
+                    lineNumber: 250,
                     columnNumber: 27
                 },
                 __self: this
@@ -50315,7 +50395,7 @@ class Pad {
     }
     initEffectsStack(player) {
         // [todo] This is absolutely horrid.
-        this.effectsStack = new EffectsStack(player, this.padContext, this.channel, this.color);
+        this.effectsStack = new (0, _effectsStack.EffectsStack)(player, this.padContext, this.channel, this.color);
         this.effectsStack.render();
     }
     initChannel() {
@@ -50356,8 +50436,8 @@ class Pad {
         PadComponents.forEach((component)=>{
             let componentButton = /*#__PURE__*/ (0, _jsx.jsx)("button", {
                 __source: {
-                    fileName: "src/components/samplePad.tsx",
-                    lineNumber: 707,
+                    fileName: "src/components/pad.tsx",
+                    lineNumber: 314,
                     columnNumber: 35
                 },
                 __self: this
@@ -50380,6 +50460,15 @@ class Pad {
         });
     }
 }
+
+},{"./effectsStack":"7S3vs","uuid":"j4KJi","@vertx/jsx":"4ObNr","./Utils":"5fpwy","./sampler":"jptuK","../views/contextMenu/contextMenu":"kpiAa","./Channel":"2P2XU","../main":"l4cos","ddd69d40aa882677":"cGcoR","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"7S3vs":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+// Currently only works on player Nodes
+parcelHelpers.export(exports, "EffectsStack", ()=>EffectsStack);
+var _jsx = require("@vertx/jsx");
+var _effectsStackView = require("../views/patch/effectsStackView");
+var _utils = require("./Utils");
 class EffectsStack {
     constructor(channel, contextHTML, destination, color){
         this.channel = channel;
@@ -50396,8 +50485,8 @@ class EffectsStack {
             color: (0, _utils.Utils).getColorValue(this.color),
             name: "Effects",
             __source: {
-                fileName: "src/components/samplePad.tsx",
-                lineNumber: 753,
+                fileName: "src/components/effectsStack.tsx",
+                lineNumber: 27,
                 columnNumber: 28
             },
             __self: this
@@ -50405,590 +50494,8 @@ class EffectsStack {
         this.context.appendChild(effectsStack);
     }
 }
-class SynthPad {
-    type = "Synth";
-    isReady = false;
-    init(padElement) {
-        let mainContainer = document.getElementById("main-container");
-        let OCTAVE = "3";
-        let UPPER = (parseInt(OCTAVE) + 1).toString();
-        let notes = [
-            `C${OCTAVE}`,
-            `C#${OCTAVE}`,
-            `D${OCTAVE}`,
-            `D#${OCTAVE}`,
-            `E${OCTAVE}`,
-            `F${OCTAVE}`,
-            `F#${OCTAVE}`,
-            `G${OCTAVE}`,
-            `G#${OCTAVE}`,
-            `A${OCTAVE}`,
-            `A#${OCTAVE}`,
-            `B${OCTAVE}`,
-            `C${UPPER}`,
-            `C#${UPPER}`,
-            `D${UPPER}`,
-            `D#${UPPER}`
-        ];
-        let inverse = notes.reverse();
-        let padArray = /*#__PURE__*/ (0, _jsx.jsx)("div", {
-            id: "pad-array",
-            class: "pad-array",
-            __source: {
-                fileName: "src/components/samplePad.tsx",
-                lineNumber: 775,
-                columnNumber: 24
-            },
-            __self: this
-        });
-        for(let i = 0; i < inverse.length; i++){
-            let note = inverse[i];
-            let pad = /*#__PURE__*/ (0, _jsx.jsx)("button", {
-                class: "pad",
-                "data-note": note,
-                __source: {
-                    fileName: "src/components/samplePad.tsx",
-                    lineNumber: 779,
-                    columnNumber: 23
-                },
-                __self: this
-            }, note);
-            let synth = new _tone.Synth().toDestination();
-            let isPlaying = false;
-            let now = _tone.now();
-            pad.onmousedown = ()=>{
-                synth.triggerAttack(note, now);
-                isPlaying = true;
-                pad.classList.add("active");
-            };
-            pad.onmouseup = ()=>{
-                synth.triggerRelease();
-                isPlaying = false;
-                pad.classList.remove("active");
-            };
-            pad.addEventListener;
-            padArray.appendChild(pad);
-        }
-        mainContainer.prepend(padArray);
-        this.renderContext();
-    }
-    play() {}
-    stop() {}
-    renderContext() {
-        console.log("Synth Yeet");
-    }
-    getContext() {}
-}
-class SamplePad {
-    type = "Sampler";
-    isReady = false;
-    sliceStart = 0;
-    startTime = 0;
-    constructor(pad, channel){
-        this.pad = pad;
-        this.channel = channel;
-    }
-    clone(instance) {
-        const copy = new instance.constructor();
-        Object.assign(copy, instance);
-        return copy;
-    }
-    renderContext() {
-        let contexts = document.querySelectorAll(".pad-context");
-        contexts.forEach((context)=>{
-            context.classList.add("d-none");
-        });
-        this.padContext.classList.remove("d-none");
-        if (this.isReady) return;
-    // if (this.isReady) {
-    //     this.drawSampler(this.player);
-    //     this.pad.initEffectsStack(this.player);
-    // }
-    }
-    getContext() {
-        let clone = this.clone(this);
-        return clone;
-    }
-    bindPad() {
-    // [todo] This can probably now be moved to pad
-    }
-    unbindPad() {
-        this.HTMLElement.onmousedown = ()=>{};
-        this.HTMLElement.onmouseup = ()=>{};
-    }
-    async registerFileToPlayer(file) {
-        this.currentFile = file;
-        let audio = URL.createObjectURL(file);
-        (0, _main.Pads).Application.showLoading();
-        // let player = new Tone.Player({
-        //     url:audio,
-        //     loop:true
-        // }).connect(this.channel);
-        let player = new _tone.Player({
-            url: audio
-        }).connect(this.channel);
-        _tone.loaded().then(async (tone)=>{
-            this.player = player;
-            await this.drawSampler(this.player, this.padContext);
-            if (!this.pad.effectsStack) this.pad.initEffectsStack(this.player);
-            this.HTMLElement.classList.add("loaded");
-            let content = this.HTMLElement.querySelector(".content");
-            content.innerHTML = "";
-            let name = /*#__PURE__*/ (0, _jsx.jsx)("h3", {
-                class: "pad-content-name",
-                __source: {
-                    fileName: "src/components/samplePad.tsx",
-                    lineNumber: 916,
-                    columnNumber: 24
-                },
-                __self: this
-            }, this.currentFile.name);
-            content.prepend(name);
-            this.isReady = true;
-        });
-    }
-    play() {
-        this.player.start(0, this.startTime);
-    // Tone.context.resume().then(() => {
-    //     console.log("Ever get here?")
-    //     Tone.Transport.start();
-    // })
-    }
-    stop() {
-        this.player.stop();
-    }
-    async drawSampler(player, padContext) {
-        let self = this;
-        let color = (0, _utils.Utils).getColorValue(this.pad.color);
-        let canvasHolder = /*#__PURE__*/ (0, _jsx.jsx)("div", {
-            __source: {
-                fileName: "src/components/samplePad.tsx",
-                lineNumber: 943,
-                columnNumber: 28
-            },
-            __self: this
-        });
-        // [todo] this is gross move again, okay for now since we only do sampler.
-        let unloadActiveComponentButton = /*#__PURE__*/ (0, _jsx.jsx)("button", {
-            class: `default-button ${this.pad.color}`,
-            __source: {
-                fileName: "src/components/samplePad.tsx",
-                lineNumber: 946,
-                columnNumber: 43
-            },
-            __self: this
-        }, "Unload Component");
-        this.padContext.prepend(unloadActiveComponentButton);
-        unloadActiveComponentButton.addEventListener("click", ()=>{
-            this.pad.removeActiveComponent(this.pad);
-        });
-        let componentContainer = /*#__PURE__*/ (0, _jsx.jsx)((0, _patchView.ComponentContainer), {
-            name: "Sampler Component",
-            color: color,
-            __source: {
-                fileName: "src/components/samplePad.tsx",
-                lineNumber: 952,
-                columnNumber: 34
-            },
-            __self: this
-        }, unloadActiveComponentButton, canvasHolder);
-        this.padContext.append(componentContainer);
-        (0, _waveform.WaveForm).SoundCloudWaveform.generate(this.currentFile, {
-            onComplete: function(png, pixels) {
-                let canvas = document.createElement("canvas");
-                let title = /*#__PURE__*/ (0, _jsx.jsx)("h3", {
-                    __source: {
-                        fileName: "src/components/samplePad.tsx",
-                        lineNumber: 958,
-                        columnNumber: 29
-                    },
-                    __self: this
-                }, "Kimbo ", /*#__PURE__*/ (0, _jsx.jsx)("span", {
-                    class: self.pad.color,
-                    __source: {
-                        fileName: "src/components/samplePad.tsx",
-                        lineNumber: 958,
-                        columnNumber: 39
-                    },
-                    __self: this
-                }, "Slice"));
-                canvasHolder.appendChild(title);
-                canvasHolder.appendChild(canvas);
-                let context = canvas.getContext("2d");
-                let canvasW = canvas.getBoundingClientRect().width;
-                let canvasH = canvas.getBoundingClientRect().height;
-                context.putImageData(pixels, 0, 0);
-                context.fillStyle = color + "60";
-                context.fillRect(self.sliceStart, 0, canvasW, canvasH);
-                canvas.addEventListener("mousedown", (e)=>{
-                    let position = (0, _utils.Utils).getCursorPosition(canvas, e);
-                    let length = player.buffer.length * player.sampleTime;
-                    let value = (0, _utils.Utils).getScaledValue(position, 0, canvasW, 0, length);
-                    context.fillStyle = color + "60";
-                    context.clearRect(0, 0, canvas.width, canvas.height);
-                    context.putImageData(pixels, 0, 0);
-                    context.fillRect(position, 0, canvasW - position, canvasH);
-                    self.sliceStart = position;
-                    self.startTime = value.toFixed(5);
-                    // self.loopStart = fixedValue
-                    // player.loopStart = fixedValue;
-                    //self.player.sync().start(self.sliceStart)
-                    self.play();
-                //player.start();
-                });
-                canvas.addEventListener("mouseup", ()=>{
-                    player.stop();
-                });
-                self.isReady = true;
-                (0, _main.Pads).Application.hideLoading();
-            }
-        });
-    }
-    addComponent(htmlElement, padContext) {
-        this.padContext = padContext;
-        this.HTMLElement = htmlElement;
-        this.bindPad();
-    //this.renderContext();
-    }
-}
 
-},{"@vertx/jsx":"4ObNr","uuid":"j4KJi","tone":"2tCfN","./Utils":"5fpwy","./waveform":"3paJt","../main":"l4cos","../views/contextMenu/contextMenu":"kpiAa","./Channel":"2P2XU","../views/patch/effectsStackView":"crnqt","../views/patch/patchView":"kf6S0","50dfaed75ab18c57":"cGcoR","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"j4KJi":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "v1", ()=>(0, _v1JsDefault.default));
-parcelHelpers.export(exports, "v3", ()=>(0, _v3JsDefault.default));
-parcelHelpers.export(exports, "v4", ()=>(0, _v4JsDefault.default));
-parcelHelpers.export(exports, "v5", ()=>(0, _v5JsDefault.default));
-parcelHelpers.export(exports, "NIL", ()=>(0, _nilJsDefault.default));
-parcelHelpers.export(exports, "version", ()=>(0, _versionJsDefault.default));
-parcelHelpers.export(exports, "validate", ()=>(0, _validateJsDefault.default));
-parcelHelpers.export(exports, "stringify", ()=>(0, _stringifyJsDefault.default));
-parcelHelpers.export(exports, "parse", ()=>(0, _parseJsDefault.default));
-var _v1Js = require("./v1.js");
-var _v1JsDefault = parcelHelpers.interopDefault(_v1Js);
-var _v3Js = require("./v3.js");
-var _v3JsDefault = parcelHelpers.interopDefault(_v3Js);
-var _v4Js = require("./v4.js");
-var _v4JsDefault = parcelHelpers.interopDefault(_v4Js);
-var _v5Js = require("./v5.js");
-var _v5JsDefault = parcelHelpers.interopDefault(_v5Js);
-var _nilJs = require("./nil.js");
-var _nilJsDefault = parcelHelpers.interopDefault(_nilJs);
-var _versionJs = require("./version.js");
-var _versionJsDefault = parcelHelpers.interopDefault(_versionJs);
-var _validateJs = require("./validate.js");
-var _validateJsDefault = parcelHelpers.interopDefault(_validateJs);
-var _stringifyJs = require("./stringify.js");
-var _stringifyJsDefault = parcelHelpers.interopDefault(_stringifyJs);
-var _parseJs = require("./parse.js");
-var _parseJsDefault = parcelHelpers.interopDefault(_parseJs);
-
-},{"./v1.js":false,"./v3.js":false,"./v4.js":"8zJtu","./v5.js":false,"./nil.js":false,"./version.js":false,"./validate.js":"eHPgI","./stringify.js":"5Y9F1","./parse.js":false,"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"8zJtu":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-var _nativeJs = require("./native.js");
-var _nativeJsDefault = parcelHelpers.interopDefault(_nativeJs);
-var _rngJs = require("./rng.js");
-var _rngJsDefault = parcelHelpers.interopDefault(_rngJs);
-var _stringifyJs = require("./stringify.js");
-function v4(options, buf, offset) {
-    if ((0, _nativeJsDefault.default).randomUUID && !buf && !options) return (0, _nativeJsDefault.default).randomUUID();
-    options = options || {};
-    const rnds = options.random || (options.rng || (0, _rngJsDefault.default))(); // Per 4.4, set bits for version and `clock_seq_hi_and_reserved`
-    rnds[6] = rnds[6] & 0x0f | 0x40;
-    rnds[8] = rnds[8] & 0x3f | 0x80; // Copy bytes to buffer, if provided
-    if (buf) {
-        offset = offset || 0;
-        for(let i = 0; i < 16; ++i)buf[offset + i] = rnds[i];
-        return buf;
-    }
-    return (0, _stringifyJs.unsafeStringify)(rnds);
-}
-exports.default = v4;
-
-},{"./native.js":"lYayS","./rng.js":"2psyE","./stringify.js":"5Y9F1","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"lYayS":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-const randomUUID = typeof crypto !== "undefined" && crypto.randomUUID && crypto.randomUUID.bind(crypto);
-exports.default = {
-    randomUUID
-};
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"2psyE":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-// Unique ID creation requires a high quality random # generator. In the browser we therefore
-// require the crypto API and do not support built-in fallback to lower quality random number
-// generators (like Math.random()).
-let getRandomValues;
-const rnds8 = new Uint8Array(16);
-function rng() {
-    // lazy load so that environments that need to polyfill have a chance to do so
-    if (!getRandomValues) {
-        // getRandomValues needs to be invoked in a context where "this" is a Crypto implementation.
-        getRandomValues = typeof crypto !== "undefined" && crypto.getRandomValues && crypto.getRandomValues.bind(crypto);
-        if (!getRandomValues) throw new Error("crypto.getRandomValues() not supported. See https://github.com/uuidjs/uuid#getrandomvalues-not-supported");
-    }
-    return getRandomValues(rnds8);
-}
-exports.default = rng;
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"5Y9F1":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "unsafeStringify", ()=>unsafeStringify);
-var _validateJs = require("./validate.js");
-var _validateJsDefault = parcelHelpers.interopDefault(_validateJs);
-/**
- * Convert array of 16 byte values to UUID string format of the form:
- * XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
- */ const byteToHex = [];
-for(let i = 0; i < 256; ++i)byteToHex.push((i + 0x100).toString(16).slice(1));
-function unsafeStringify(arr, offset = 0) {
-    // Note: Be careful editing this code!  It's been tuned for performance
-    // and works in ways you may not expect. See https://github.com/uuidjs/uuid/pull/434
-    return (byteToHex[arr[offset + 0]] + byteToHex[arr[offset + 1]] + byteToHex[arr[offset + 2]] + byteToHex[arr[offset + 3]] + "-" + byteToHex[arr[offset + 4]] + byteToHex[arr[offset + 5]] + "-" + byteToHex[arr[offset + 6]] + byteToHex[arr[offset + 7]] + "-" + byteToHex[arr[offset + 8]] + byteToHex[arr[offset + 9]] + "-" + byteToHex[arr[offset + 10]] + byteToHex[arr[offset + 11]] + byteToHex[arr[offset + 12]] + byteToHex[arr[offset + 13]] + byteToHex[arr[offset + 14]] + byteToHex[arr[offset + 15]]).toLowerCase();
-}
-function stringify(arr, offset = 0) {
-    const uuid = unsafeStringify(arr, offset); // Consistency check for valid UUID.  If this throws, it's likely due to one
-    // of the following:
-    // - One or more input array values don't map to a hex octet (leading to
-    // "undefined" in the uuid)
-    // - Invalid input values for the RFC `version` or `variant` fields
-    if (!(0, _validateJsDefault.default)(uuid)) throw TypeError("Stringified UUID is invalid");
-    return uuid;
-}
-exports.default = stringify;
-
-},{"./validate.js":"eHPgI","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"eHPgI":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-var _regexJs = require("./regex.js");
-var _regexJsDefault = parcelHelpers.interopDefault(_regexJs);
-function validate(uuid) {
-    return typeof uuid === "string" && (0, _regexJsDefault.default).test(uuid);
-}
-exports.default = validate;
-
-},{"./regex.js":"bUa5g","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"bUa5g":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-exports.default = /^(?:[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}|00000000-0000-0000-0000-000000000000)$/i;
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"3paJt":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "WaveForm", ()=>WaveForm);
-Array.prototype.max = function() {
-    return Math.max.apply(null, this);
-};
-class WaveForm {
-    static SoundCloudWaveform = {
-        settings: {
-            canvas_width: 453,
-            canvas_height: 66,
-            bar_width: 3,
-            bar_gap: 0.2,
-            wave_color: "#666",
-            download: false,
-            onComplete: function(png, pixels) {}
-        },
-        audioContext: new AudioContext(),
-        generate: function(file, options) {
-            // preparing canvas
-            this.settings.canvas = document.createElement("canvas");
-            this.settings.context = this.settings.canvas.getContext("2d");
-            this.settings.canvas.width = options.canvas_width !== undefined ? parseInt(options.canvas_width) : this.settings.canvas_width;
-            this.settings.canvas.height = options.canvas_height !== undefined ? parseInt(options.canvas_height) : this.settings.canvas_height;
-            // setting fill color
-            this.settings.wave_color = options.wave_color !== undefined ? options.wave_color : this.settings.wave_color;
-            // setting bars width and gap
-            this.settings.bar_width = options.bar_width !== undefined ? parseInt(options.bar_width) : this.settings.bar_width;
-            this.settings.bar_gap = options.bar_gap !== undefined ? parseFloat(options.bar_gap) : this.settings.bar_gap;
-            this.settings.download = options.download !== undefined ? options.download : this.settings.download;
-            this.settings.onComplete = options.onComplete !== undefined ? options.onComplete : this.settings.onComplete;
-            // read file buffer
-            var reader = new FileReader();
-            reader.onload = function(event) {
-                WaveForm.SoundCloudWaveform.audioContext.decodeAudioData(event.target.result, function(buffer) {
-                    WaveForm.SoundCloudWaveform.extractBuffer(buffer);
-                });
-            };
-            reader.readAsArrayBuffer(file);
-        },
-        extractBuffer: function(buffer) {
-            buffer = buffer.getChannelData(0);
-            var sections = this.settings.canvas.width;
-            var len = Math.floor(buffer.length / sections);
-            var maxHeight = this.settings.canvas.height;
-            var vals = [];
-            for(var i = 0; i < sections; i += this.settings.bar_width)vals.push(this.bufferMeasure(i * len, len, buffer) * 10000);
-            for(var j = 0; j < sections; j += this.settings.bar_width){
-                var scale = maxHeight / vals.max();
-                var val = this.bufferMeasure(j * len, len, buffer) * 10000;
-                val *= scale;
-                val += 1;
-                this.drawBar(j, val);
-            }
-            if (this.settings.download) this.generateImage();
-            this.settings.onComplete(this.settings.canvas.toDataURL("image/png"), this.settings.context.getImageData(0, 0, this.settings.canvas.width, this.settings.canvas.height));
-            // clear canvas for redrawing
-            this.settings.context.clearRect(0, 0, this.settings.canvas.width, this.settings.canvas.height);
-        },
-        bufferMeasure: function(position, length, data) {
-            var sum = 0.0;
-            for(var i = position; i <= position + length - 1; i++)sum += Math.pow(data[i], 2);
-            return Math.sqrt(sum / data.length);
-        },
-        drawBar: function(i, h) {
-            this.settings.context.fillStyle = this.settings.wave_color;
-            var w = this.settings.bar_width;
-            if (this.settings.bar_gap !== 0) w *= Math.abs(1 - this.settings.bar_gap);
-            var x = i + w / 2, y = this.settings.canvas.height - h;
-            this.settings.context.fillRect(x, y, w, h);
-        },
-        generateImage: function() {
-            var image = this.settings.canvas.toDataURL("image/png");
-            var link = document.createElement("a");
-            link.href = image;
-            link.setAttribute("download", "");
-            link.click();
-        }
-    };
-}
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"kpiAa":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "ContextMenu", ()=>ContextMenu);
-var _jsx = require("@vertx/jsx");
-let css = require("../contextMenu/context.css");
-class ContextMenu {
-    getType() {
-        switch(this.item.type){
-            case "PadGroup":
-                this.type = "PadGroup";
-                this.setupGroup();
-                break;
-            case "Pad":
-                this.type = "Pad";
-                this.setupPad();
-                break;
-            default:
-                return /*#__PURE__*/ (0, _jsx.jsx)("div", {
-                    __source: {
-                        fileName: "src/views/contextMenu/contextMenu.tsx",
-                        lineNumber: 26,
-                        columnNumber: 16
-                    },
-                    __self: this
-                });
-        }
-    }
-    setupGroup() {
-        console.warn("Group");
-        return /*#__PURE__*/ (0, _jsx.jsx)("div", {
-            __source: {
-                fileName: "src/views/contextMenu/contextMenu.tsx",
-                lineNumber: 33,
-                columnNumber: 12
-            },
-            __self: this
-        });
-    }
-    setupPad() {
-        console.warn("Pad");
-        return /*#__PURE__*/ (0, _jsx.jsx)("div", {
-            __source: {
-                fileName: "src/views/contextMenu/contextMenu.tsx",
-                lineNumber: 37,
-                columnNumber: 12
-            },
-            __self: this
-        });
-    }
-    mute() {
-        console.warn("Muting..");
-        if (this.type == "Pad") {
-            let item = this.item;
-            let isMuted = item.channel.muted;
-            item.channel.mute = !isMuted;
-            return;
-        }
-        if (this.type == "PadGroup") {
-            let item1 = this.item;
-            let isMuted1 = item1.channel.muted;
-            item1.channel.mute = !isMuted1;
-        // Implement groups. We need to go up the tree and figure out which group has been muted.
-        }
-    }
-    showMenu(x, y) {
-        this.menu.style.left = x + "px";
-        this.menu.style.top = y + "px";
-        this.menu.classList.add("show-menu");
-    }
-    render() {
-        console.log("Render Context");
-        this.menu = /*#__PURE__*/ (0, _jsx.jsx)("menu", {
-            class: "menu",
-            __source: {
-                fileName: "src/views/contextMenu/contextMenu.tsx",
-                lineNumber: 70,
-                columnNumber: 17
-            },
-            __self: this
-        }, /*#__PURE__*/ (0, _jsx.jsx)("li", {
-            class: "menu-item",
-            __source: {
-                fileName: "src/views/contextMenu/contextMenu.tsx",
-                lineNumber: 71,
-                columnNumber: 7
-            },
-            __self: this
-        }, /*#__PURE__*/ (0, _jsx.jsx)("button", {
-            type: "button",
-            class: "menu-btn",
-            __source: {
-                fileName: "src/views/contextMenu/contextMenu.tsx",
-                lineNumber: 72,
-                columnNumber: 9
-            },
-            __self: this
-        }, " ", /*#__PURE__*/ (0, _jsx.jsx)("i", {
-            class: "fa fa-folder-open",
-            __source: {
-                fileName: "src/views/contextMenu/contextMenu.tsx",
-                lineNumber: 72,
-                columnNumber: 49
-            },
-            __self: this
-        }), " ", /*#__PURE__*/ (0, _jsx.jsx)("span", {
-            class: "menu-text",
-            onclick: ()=>{
-                this.mute();
-            },
-            __source: {
-                fileName: "src/views/contextMenu/contextMenu.tsx",
-                lineNumber: 72,
-                columnNumber: 83
-            },
-            __self: this
-        }, "Mute"), " ")));
-        let options = this.getType();
-        if (options) this.menu.prepend(options);
-        document.body.prepend(this.menu);
-        this.showMenu(this.event.pageX, this.event.pageY);
-        document.addEventListener("click", ()=>{
-            this.menu.remove();
-            document.removeEventListener("click", ()=>{
-                this;
-            });
-        });
-        return this.menu;
-    }
-}
-
-},{"@vertx/jsx":"4ObNr","../contextMenu/context.css":"19oOC","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"19oOC":[function() {},{}],"crnqt":[function(require,module,exports) {
+},{"@vertx/jsx":"4ObNr","../views/patch/effectsStackView":"crnqt","./Utils":"5fpwy","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"crnqt":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "EffectsStackView", ()=>EffectsStackView);
@@ -51365,7 +50872,646 @@ class EffectsStackModule {
     }
 }
 
-},{"@vertx/jsx":"4ObNr","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"cGcoR":[function(require,module,exports) {
+},{"@vertx/jsx":"4ObNr","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"j4KJi":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "v1", ()=>(0, _v1JsDefault.default));
+parcelHelpers.export(exports, "v3", ()=>(0, _v3JsDefault.default));
+parcelHelpers.export(exports, "v4", ()=>(0, _v4JsDefault.default));
+parcelHelpers.export(exports, "v5", ()=>(0, _v5JsDefault.default));
+parcelHelpers.export(exports, "NIL", ()=>(0, _nilJsDefault.default));
+parcelHelpers.export(exports, "version", ()=>(0, _versionJsDefault.default));
+parcelHelpers.export(exports, "validate", ()=>(0, _validateJsDefault.default));
+parcelHelpers.export(exports, "stringify", ()=>(0, _stringifyJsDefault.default));
+parcelHelpers.export(exports, "parse", ()=>(0, _parseJsDefault.default));
+var _v1Js = require("./v1.js");
+var _v1JsDefault = parcelHelpers.interopDefault(_v1Js);
+var _v3Js = require("./v3.js");
+var _v3JsDefault = parcelHelpers.interopDefault(_v3Js);
+var _v4Js = require("./v4.js");
+var _v4JsDefault = parcelHelpers.interopDefault(_v4Js);
+var _v5Js = require("./v5.js");
+var _v5JsDefault = parcelHelpers.interopDefault(_v5Js);
+var _nilJs = require("./nil.js");
+var _nilJsDefault = parcelHelpers.interopDefault(_nilJs);
+var _versionJs = require("./version.js");
+var _versionJsDefault = parcelHelpers.interopDefault(_versionJs);
+var _validateJs = require("./validate.js");
+var _validateJsDefault = parcelHelpers.interopDefault(_validateJs);
+var _stringifyJs = require("./stringify.js");
+var _stringifyJsDefault = parcelHelpers.interopDefault(_stringifyJs);
+var _parseJs = require("./parse.js");
+var _parseJsDefault = parcelHelpers.interopDefault(_parseJs);
+
+},{"./v1.js":false,"./v3.js":false,"./v4.js":"8zJtu","./v5.js":false,"./nil.js":false,"./version.js":false,"./validate.js":"eHPgI","./stringify.js":"5Y9F1","./parse.js":false,"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"8zJtu":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _nativeJs = require("./native.js");
+var _nativeJsDefault = parcelHelpers.interopDefault(_nativeJs);
+var _rngJs = require("./rng.js");
+var _rngJsDefault = parcelHelpers.interopDefault(_rngJs);
+var _stringifyJs = require("./stringify.js");
+function v4(options, buf, offset) {
+    if ((0, _nativeJsDefault.default).randomUUID && !buf && !options) return (0, _nativeJsDefault.default).randomUUID();
+    options = options || {};
+    const rnds = options.random || (options.rng || (0, _rngJsDefault.default))(); // Per 4.4, set bits for version and `clock_seq_hi_and_reserved`
+    rnds[6] = rnds[6] & 0x0f | 0x40;
+    rnds[8] = rnds[8] & 0x3f | 0x80; // Copy bytes to buffer, if provided
+    if (buf) {
+        offset = offset || 0;
+        for(let i = 0; i < 16; ++i)buf[offset + i] = rnds[i];
+        return buf;
+    }
+    return (0, _stringifyJs.unsafeStringify)(rnds);
+}
+exports.default = v4;
+
+},{"./native.js":"lYayS","./rng.js":"2psyE","./stringify.js":"5Y9F1","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"lYayS":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+const randomUUID = typeof crypto !== "undefined" && crypto.randomUUID && crypto.randomUUID.bind(crypto);
+exports.default = {
+    randomUUID
+};
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"2psyE":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+// Unique ID creation requires a high quality random # generator. In the browser we therefore
+// require the crypto API and do not support built-in fallback to lower quality random number
+// generators (like Math.random()).
+let getRandomValues;
+const rnds8 = new Uint8Array(16);
+function rng() {
+    // lazy load so that environments that need to polyfill have a chance to do so
+    if (!getRandomValues) {
+        // getRandomValues needs to be invoked in a context where "this" is a Crypto implementation.
+        getRandomValues = typeof crypto !== "undefined" && crypto.getRandomValues && crypto.getRandomValues.bind(crypto);
+        if (!getRandomValues) throw new Error("crypto.getRandomValues() not supported. See https://github.com/uuidjs/uuid#getrandomvalues-not-supported");
+    }
+    return getRandomValues(rnds8);
+}
+exports.default = rng;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"5Y9F1":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "unsafeStringify", ()=>unsafeStringify);
+var _validateJs = require("./validate.js");
+var _validateJsDefault = parcelHelpers.interopDefault(_validateJs);
+/**
+ * Convert array of 16 byte values to UUID string format of the form:
+ * XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
+ */ const byteToHex = [];
+for(let i = 0; i < 256; ++i)byteToHex.push((i + 0x100).toString(16).slice(1));
+function unsafeStringify(arr, offset = 0) {
+    // Note: Be careful editing this code!  It's been tuned for performance
+    // and works in ways you may not expect. See https://github.com/uuidjs/uuid/pull/434
+    return (byteToHex[arr[offset + 0]] + byteToHex[arr[offset + 1]] + byteToHex[arr[offset + 2]] + byteToHex[arr[offset + 3]] + "-" + byteToHex[arr[offset + 4]] + byteToHex[arr[offset + 5]] + "-" + byteToHex[arr[offset + 6]] + byteToHex[arr[offset + 7]] + "-" + byteToHex[arr[offset + 8]] + byteToHex[arr[offset + 9]] + "-" + byteToHex[arr[offset + 10]] + byteToHex[arr[offset + 11]] + byteToHex[arr[offset + 12]] + byteToHex[arr[offset + 13]] + byteToHex[arr[offset + 14]] + byteToHex[arr[offset + 15]]).toLowerCase();
+}
+function stringify(arr, offset = 0) {
+    const uuid = unsafeStringify(arr, offset); // Consistency check for valid UUID.  If this throws, it's likely due to one
+    // of the following:
+    // - One or more input array values don't map to a hex octet (leading to
+    // "undefined" in the uuid)
+    // - Invalid input values for the RFC `version` or `variant` fields
+    if (!(0, _validateJsDefault.default)(uuid)) throw TypeError("Stringified UUID is invalid");
+    return uuid;
+}
+exports.default = stringify;
+
+},{"./validate.js":"eHPgI","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"eHPgI":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _regexJs = require("./regex.js");
+var _regexJsDefault = parcelHelpers.interopDefault(_regexJs);
+function validate(uuid) {
+    return typeof uuid === "string" && (0, _regexJsDefault.default).test(uuid);
+}
+exports.default = validate;
+
+},{"./regex.js":"bUa5g","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"bUa5g":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+exports.default = /^(?:[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}|00000000-0000-0000-0000-000000000000)$/i;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"jptuK":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+// Sampler components to be bound to pad.
+parcelHelpers.export(exports, "SamplePad", ()=>SamplePad);
+var _jsx = require("@vertx/jsx");
+var _main = require("../main");
+var _tone = require("tone");
+var _patchView = require("../views/patch/patchView");
+var _utils = require("./Utils");
+var _waveform = require("./waveform");
+var _padSequence = require("./padSequence");
+class SamplePad {
+    type = "Sampler";
+    isReady = false;
+    sliceStart = 0;
+    startTime = 0;
+    constructor(pad, channel){
+        this.pad = pad;
+        this.channel = channel;
+    }
+    clone(instance) {
+        const copy = new instance.constructor();
+        Object.assign(copy, instance);
+        return copy;
+    }
+    renderContext() {
+        let contexts = document.querySelectorAll(".pad-context");
+        contexts.forEach((context)=>{
+            context.classList.add("d-none");
+        });
+        this.padContext.classList.remove("d-none");
+        if (this.isReady) return;
+    // if (this.isReady) {
+    //     this.drawSampler(this.player);
+    //     this.pad.initEffectsStack(this.player);
+    // }
+    }
+    getContext() {
+        let clone = this.clone(this);
+        return clone;
+    }
+    bindPad() {
+    // [todo] This can probably now be moved to pad
+    }
+    unbindPad() {
+        this.HTMLElement.onmousedown = ()=>{};
+        this.HTMLElement.onmouseup = ()=>{};
+    }
+    async registerFileToPlayer(file) {
+        this.currentFile = file;
+        let audio = URL.createObjectURL(file);
+        (0, _main.Pads).Application.showLoading();
+        // let player = new Tone.Player({
+        //     url:audio,
+        //     loop:true
+        // }).connect(this.channel);
+        let player = new _tone.Player({
+            url: audio
+        }).connect(this.channel);
+        _tone.loaded().then(async (tone)=>{
+            this.player = player;
+            await this.drawSampler(this.player, this.padContext);
+            if (!this.pad.effectsStack) this.pad.initEffectsStack(this.player);
+            this.HTMLElement.classList.add("loaded");
+            let content = this.HTMLElement.querySelector(".content");
+            content.innerHTML = "";
+            let name = /*#__PURE__*/ (0, _jsx.jsx)("h3", {
+                class: "pad-content-name",
+                __source: {
+                    fileName: "src/components/sampler.tsx",
+                    lineNumber: 111,
+                    columnNumber: 24
+                },
+                __self: this
+            }, this.currentFile.name);
+            content.prepend(name);
+            this.isReady = true;
+        });
+    }
+    play(time) {
+        let playAt;
+        if (_tone.Transport.now() > 0) playAt = _tone.Transport.now();
+        if (time) playAt = time;
+        else playAt = 0;
+        this.player.start(playAt, this.startTime);
+    // Tone.context.resume().then(() => {
+    //     console.log("Ever get here?")
+    //     Tone.Transport.start();
+    // })
+    }
+    stop() {
+        this.player.stop();
+    }
+    async drawSampler(player, padContext) {
+        let self = this;
+        let color = (0, _utils.Utils).getColorValue(this.pad.color);
+        let canvasHolder = /*#__PURE__*/ (0, _jsx.jsx)("div", {
+            __source: {
+                fileName: "src/components/sampler.tsx",
+                lineNumber: 151,
+                columnNumber: 28
+            },
+            __self: this
+        });
+        // [todo] this is gross move again, okay for now since we only do sampler.
+        let unloadActiveComponentButton = /*#__PURE__*/ (0, _jsx.jsx)("button", {
+            class: `default-button ${this.pad.color}`,
+            __source: {
+                fileName: "src/components/sampler.tsx",
+                lineNumber: 154,
+                columnNumber: 43
+            },
+            __self: this
+        }, "Unload Component");
+        this.padContext.prepend(unloadActiveComponentButton);
+        unloadActiveComponentButton.addEventListener("click", ()=>{
+            this.pad.removeActiveComponent(this.pad);
+        });
+        let componentContainer = /*#__PURE__*/ (0, _jsx.jsx)((0, _patchView.ComponentContainer), {
+            name: "Sampler Component",
+            color: color,
+            __source: {
+                fileName: "src/components/sampler.tsx",
+                lineNumber: 160,
+                columnNumber: 34
+            },
+            __self: this
+        }, unloadActiveComponentButton, canvasHolder);
+        this.padContext.append(componentContainer);
+        (0, _waveform.WaveForm).SoundCloudWaveform.generate(this.currentFile, {
+            onComplete: function(png, pixels) {
+                let canvas = document.createElement("canvas");
+                let title = /*#__PURE__*/ (0, _jsx.jsx)("h3", {
+                    __source: {
+                        fileName: "src/components/sampler.tsx",
+                        lineNumber: 166,
+                        columnNumber: 29
+                    },
+                    __self: this
+                }, "Kimbo ", /*#__PURE__*/ (0, _jsx.jsx)("span", {
+                    class: self.pad.color,
+                    __source: {
+                        fileName: "src/components/sampler.tsx",
+                        lineNumber: 166,
+                        columnNumber: 39
+                    },
+                    __self: this
+                }, "Slice"));
+                canvasHolder.appendChild(title);
+                canvasHolder.appendChild(canvas);
+                let context = canvas.getContext("2d");
+                let canvasW = canvas.getBoundingClientRect().width;
+                let canvasH = canvas.getBoundingClientRect().height;
+                context.putImageData(pixels, 0, 0);
+                context.fillStyle = color + "60";
+                context.fillRect(self.sliceStart, 0, canvasW, canvasH);
+                canvas.addEventListener("mousedown", (e)=>{
+                    let position = (0, _utils.Utils).getCursorPosition(canvas, e);
+                    let length = player.buffer.length * player.sampleTime;
+                    let value = (0, _utils.Utils).getScaledValue(position, 0, canvasW, 0, length);
+                    context.fillStyle = color + "60";
+                    context.clearRect(0, 0, canvas.width, canvas.height);
+                    context.putImageData(pixels, 0, 0);
+                    context.fillRect(position, 0, canvasW - position, canvasH);
+                    self.sliceStart = position;
+                    self.startTime = value.toFixed(5);
+                    // self.loopStart = fixedValue
+                    // player.loopStart = fixedValue;
+                    //self.player.sync().start(self.sliceStart)
+                    self.play();
+                //player.start();
+                });
+                canvas.addEventListener("mouseup", ()=>{
+                    player.stop();
+                });
+                self.isReady = true;
+                (0, _main.Pads).Application.hideLoading();
+            }
+        });
+    }
+    addComponent(htmlElement, padContext) {
+        this.padContext = padContext;
+        this.HTMLElement = htmlElement;
+        this.bindPad();
+        this.pad.activeComponent = this;
+        //this.renderContext();
+        // This really sucks but it's here for now.
+        let sequencer = new (0, _padSequence.PadSequence)(this.pad);
+        sequencer.init();
+        this.pad.sequencer = sequencer;
+    }
+}
+
+},{"@vertx/jsx":"4ObNr","../main":"l4cos","tone":"2tCfN","../views/patch/patchView":"kf6S0","./Utils":"5fpwy","./waveform":"3paJt","./padSequence":"drsft","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"3paJt":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "WaveForm", ()=>WaveForm);
+Array.prototype.max = function() {
+    return Math.max.apply(null, this);
+};
+class WaveForm {
+    static SoundCloudWaveform = {
+        settings: {
+            canvas_width: 453,
+            canvas_height: 66,
+            bar_width: 3,
+            bar_gap: 0.2,
+            wave_color: "#666",
+            download: false,
+            onComplete: function(png, pixels) {}
+        },
+        audioContext: new AudioContext(),
+        generate: function(file, options) {
+            // preparing canvas
+            this.settings.canvas = document.createElement("canvas");
+            this.settings.context = this.settings.canvas.getContext("2d");
+            this.settings.canvas.width = options.canvas_width !== undefined ? parseInt(options.canvas_width) : this.settings.canvas_width;
+            this.settings.canvas.height = options.canvas_height !== undefined ? parseInt(options.canvas_height) : this.settings.canvas_height;
+            // setting fill color
+            this.settings.wave_color = options.wave_color !== undefined ? options.wave_color : this.settings.wave_color;
+            // setting bars width and gap
+            this.settings.bar_width = options.bar_width !== undefined ? parseInt(options.bar_width) : this.settings.bar_width;
+            this.settings.bar_gap = options.bar_gap !== undefined ? parseFloat(options.bar_gap) : this.settings.bar_gap;
+            this.settings.download = options.download !== undefined ? options.download : this.settings.download;
+            this.settings.onComplete = options.onComplete !== undefined ? options.onComplete : this.settings.onComplete;
+            // read file buffer
+            var reader = new FileReader();
+            reader.onload = function(event) {
+                WaveForm.SoundCloudWaveform.audioContext.decodeAudioData(event.target.result, function(buffer) {
+                    WaveForm.SoundCloudWaveform.extractBuffer(buffer);
+                });
+            };
+            reader.readAsArrayBuffer(file);
+        },
+        extractBuffer: function(buffer) {
+            buffer = buffer.getChannelData(0);
+            var sections = this.settings.canvas.width;
+            var len = Math.floor(buffer.length / sections);
+            var maxHeight = this.settings.canvas.height;
+            var vals = [];
+            for(var i = 0; i < sections; i += this.settings.bar_width)vals.push(this.bufferMeasure(i * len, len, buffer) * 10000);
+            for(var j = 0; j < sections; j += this.settings.bar_width){
+                var scale = maxHeight / vals.max();
+                var val = this.bufferMeasure(j * len, len, buffer) * 10000;
+                val *= scale;
+                val += 1;
+                this.drawBar(j, val);
+            }
+            if (this.settings.download) this.generateImage();
+            this.settings.onComplete(this.settings.canvas.toDataURL("image/png"), this.settings.context.getImageData(0, 0, this.settings.canvas.width, this.settings.canvas.height));
+            // clear canvas for redrawing
+            this.settings.context.clearRect(0, 0, this.settings.canvas.width, this.settings.canvas.height);
+        },
+        bufferMeasure: function(position, length, data) {
+            var sum = 0.0;
+            for(var i = position; i <= position + length - 1; i++)sum += Math.pow(data[i], 2);
+            return Math.sqrt(sum / data.length);
+        },
+        drawBar: function(i, h) {
+            this.settings.context.fillStyle = this.settings.wave_color;
+            var w = this.settings.bar_width;
+            if (this.settings.bar_gap !== 0) w *= Math.abs(1 - this.settings.bar_gap);
+            var x = i + w / 2, y = this.settings.canvas.height - h;
+            this.settings.context.fillRect(x, y, w, h);
+        },
+        generateImage: function() {
+            var image = this.settings.canvas.toDataURL("image/png");
+            var link = document.createElement("a");
+            link.href = image;
+            link.setAttribute("download", "");
+            link.click();
+        }
+    };
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"drsft":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "PadSequence", ()=>PadSequence);
+var _tone = require("tone");
+var _jsx = require("@vertx/jsx");
+class PadSequence {
+    constructor(pad){
+        this.pad = pad;
+    }
+    triggerPlayer(time, note) {
+        if (!this.pad.activeComponent) return;
+        if (note !== "") this.pad.activeComponent.play(time);
+    }
+    triggerAnimation(time) {
+        _tone.Draw.schedule(()=>{
+            this.sequenceButtons.forEach((button)=>{
+                button.classList.remove("sequence-active");
+            });
+            console.log(this.count);
+            console.log(this.sequenceButtons[this.count]);
+            this.sequenceButtons[this.count].classList.add("sequence-active");
+            this.count++;
+            if (this.count == this.sequenceLength) this.count = 0;
+        }, time);
+    }
+    updateSequence(index, value) {
+        this.sequenceArray.splice(index, 1, value);
+        this.sequence.dispose();
+        this.sequence = null;
+        this.sequence = new _tone.Sequence((time, note)=>{
+            // [removed]
+            //this.triggerPlayer(this.player,time,note);
+            this.triggerAnimation(time);
+            this.triggerPlayer(time, note);
+        }, this.sequenceArray).start(0);
+        if (value == "loaded") this.sequenceButtons[index].classList.add("loaded");
+        else this.sequenceButtons[index].classList.remove("loaded");
+    }
+    renderView() {
+        this.sequenceButtons = [];
+        this.wrapper.innerHTML = "";
+        let sequencerGrid = /*#__PURE__*/ (0, _jsx.jsx)("div", {
+            class: "sequencer-grid",
+            __source: {
+                fileName: "src/components/padSequence.tsx",
+                lineNumber: 85,
+                columnNumber: 29
+            },
+            __self: this
+        });
+        this.wrapper.append(sequencerGrid);
+        console.log(this.sequenceLength);
+        for(let p = 0; p < this.sequenceLength; p++){
+            let button = /*#__PURE__*/ (0, _jsx.jsx)("button", {
+                class: "sequencer-pad",
+                "data-loaded": false,
+                __source: {
+                    fileName: "src/components/padSequence.tsx",
+                    lineNumber: 89,
+                    columnNumber: 26
+                },
+                __self: this
+            }, "Seq");
+            this.sequenceButtons.push(button);
+            if (this.sequenceArray[p] == "loaded") button.classList.add("loaded");
+            sequencerGrid.append(button);
+            button.addEventListener("click", ()=>{
+                if (this.sequenceArray[p] == "loaded") this.updateSequence(p, "");
+                else this.updateSequence(p, "loaded");
+            });
+        }
+        console.log(this.sequenceButtons);
+    }
+    init() {
+        this.count = 0;
+        this.sequenceButtons = [];
+        this.wrapper = document.getElementById("sequencer-wrapper");
+        this.masterPlay = document.getElementById("master-play");
+        this.masterPause = document.getElementById("master-pause");
+        this.sequenceArray = [];
+        this.sequenceLength = 16;
+        for(let p = 1; p <= this.sequenceLength; p++)this.sequenceArray.push("");
+        this.renderView();
+        // connect the UI with the components
+        this.masterPlay.addEventListener("click", ()=>this.startLoop());
+        this.masterPause.addEventListener("click", ()=>this.stopLoop());
+        this.sequence = new _tone.Sequence((time, note)=>{
+            this.triggerPlayer(time, note);
+        // subdivisions are given as subarrays
+        }, this.sequenceArray).start(0);
+    }
+    async startLoop() {
+        this.count = 0;
+        await _tone.start();
+        // Buffer improves accuracy
+        //Tone.Transport.start("+2.0")
+        _tone.Transport.start();
+    }
+    stopLoop() {
+        _tone.Transport.stop();
+        setTimeout(()=>{
+            this.sequenceButtons.forEach((button)=>{
+                button.classList.remove("sequence-active");
+            });
+        }, 100);
+    }
+}
+
+},{"tone":"2tCfN","@vertx/jsx":"4ObNr","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"kpiAa":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "ContextMenu", ()=>ContextMenu);
+var _jsx = require("@vertx/jsx");
+let css = require("../contextMenu/context.css");
+class ContextMenu {
+    getType() {
+        switch(this.item.type){
+            case "PadGroup":
+                this.type = "PadGroup";
+                this.setupGroup();
+                break;
+            case "Pad":
+                this.type = "Pad";
+                this.setupPad();
+                break;
+            default:
+                return /*#__PURE__*/ (0, _jsx.jsx)("div", {
+                    __source: {
+                        fileName: "src/views/contextMenu/contextMenu.tsx",
+                        lineNumber: 26,
+                        columnNumber: 16
+                    },
+                    __self: this
+                });
+        }
+    }
+    setupGroup() {
+        console.warn("Group");
+        return /*#__PURE__*/ (0, _jsx.jsx)("div", {
+            __source: {
+                fileName: "src/views/contextMenu/contextMenu.tsx",
+                lineNumber: 33,
+                columnNumber: 12
+            },
+            __self: this
+        });
+    }
+    setupPad() {
+        console.warn("Pad");
+        return /*#__PURE__*/ (0, _jsx.jsx)("div", {
+            __source: {
+                fileName: "src/views/contextMenu/contextMenu.tsx",
+                lineNumber: 37,
+                columnNumber: 12
+            },
+            __self: this
+        });
+    }
+    mute() {
+        console.warn("Muting..");
+        if (this.type == "Pad") {
+            let item = this.item;
+            let isMuted = item.channel.muted;
+            item.channel.mute = !isMuted;
+            return;
+        }
+        if (this.type == "PadGroup") {
+            let item1 = this.item;
+            let isMuted1 = item1.channel.muted;
+            item1.channel.mute = !isMuted1;
+        // Implement groups. We need to go up the tree and figure out which group has been muted.
+        }
+    }
+    showMenu(x, y) {
+        this.menu.style.left = x + "px";
+        this.menu.style.top = y + "px";
+        this.menu.classList.add("show-menu");
+    }
+    render() {
+        console.log("Render Context");
+        this.menu = /*#__PURE__*/ (0, _jsx.jsx)("menu", {
+            class: "menu",
+            __source: {
+                fileName: "src/views/contextMenu/contextMenu.tsx",
+                lineNumber: 70,
+                columnNumber: 17
+            },
+            __self: this
+        }, /*#__PURE__*/ (0, _jsx.jsx)("li", {
+            class: "menu-item",
+            __source: {
+                fileName: "src/views/contextMenu/contextMenu.tsx",
+                lineNumber: 71,
+                columnNumber: 7
+            },
+            __self: this
+        }, /*#__PURE__*/ (0, _jsx.jsx)("button", {
+            type: "button",
+            class: "menu-btn",
+            __source: {
+                fileName: "src/views/contextMenu/contextMenu.tsx",
+                lineNumber: 72,
+                columnNumber: 9
+            },
+            __self: this
+        }, " ", /*#__PURE__*/ (0, _jsx.jsx)("i", {
+            class: "fa fa-folder-open",
+            __source: {
+                fileName: "src/views/contextMenu/contextMenu.tsx",
+                lineNumber: 72,
+                columnNumber: 49
+            },
+            __self: this
+        }), " ", /*#__PURE__*/ (0, _jsx.jsx)("span", {
+            class: "menu-text",
+            onclick: ()=>{
+                this.mute();
+            },
+            __source: {
+                fileName: "src/views/contextMenu/contextMenu.tsx",
+                lineNumber: 72,
+                columnNumber: 83
+            },
+            __self: this
+        }, "Mute"), " ")));
+        let options = this.getType();
+        if (options) this.menu.prepend(options);
+        document.body.prepend(this.menu);
+        this.showMenu(this.event.pageX, this.event.pageY);
+        document.addEventListener("click", ()=>{
+            this.menu.remove();
+            document.removeEventListener("click", ()=>{
+                this;
+            });
+        });
+        return this.menu;
+    }
+}
+
+},{"@vertx/jsx":"4ObNr","../contextMenu/context.css":"19oOC","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"19oOC":[function() {},{}],"cGcoR":[function(require,module,exports) {
 module.exports = require("./helpers/bundle-url").getBundleURL("hjEE9") + "audio-file.c02ea183.svg" + "?" + Date.now();
 
 },{"./helpers/bundle-url":"lgJ39"}],"lgJ39":[function(require,module,exports) {
@@ -51408,80 +51554,94 @@ parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "ResourceBrowser", ()=>ResourceBrowser);
 parcelHelpers.export(exports, "ResourceItem", ()=>ResourceItem);
 var _jsx = require("@vertx/jsx");
-var _samplePad = require("../../components/samplePad");
 var _main = require("../../main");
 var _utils = require("../../components/Utils");
 var _mp3 = require("../../resources/*.mp3");
 var _wav = require("../../resources/phrixus/drums/*.wav");
 var _wav1 = require("../../resources/phrixus/bass/*.wav");
 var _wav2 = require("../../resources/phrixus/texture/*.wav");
+var _wav3 = require("../../resources/shulz/*.wav");
+var _sampler = require("../../components/sampler");
 let css = require("../contextMenu/context.css");
 class ResourceBrowser {
     wrapper = document.getElementById("browser-wrapper");
     render(children) {
-        console.warn("Rendering Resource Browser");
-        console.warn("Rendering Browser");
-        let resourceURLs = Object.values(_mp3);
-        let resourceNames = Object.keys(_mp3);
+        // let resourceURLs = Object.values(files);
+        // let resourceNames = Object.keys(files);
         let resourceObjects = [];
-        for(let i = 0; i < resourceURLs.length; i++){
+        let ShulzURLS = Object.values(_wav3);
+        let ShulzNames = Object.keys(_wav3);
+        // Load in Shulz Kit
+        for(let i = 0; i < ShulzURLS.length; i++){
             let object = {
-                "name": resourceNames[i],
-                "path": resourceURLs[i],
+                "name": ShulzNames[i],
+                "path": ShulzURLS[i],
                 "tags": [
-                    "bork"
+                    "Shulz"
                 ]
             };
             resourceObjects.push(object);
         }
+        let randomURLS = Object.values(_mp3);
+        let randomNames = Object.keys(_mp3);
+        for(let i1 = 0; i1 < randomURLS.length; i1++){
+            let object1 = {
+                "name": randomNames[i1],
+                "path": randomURLS[i1],
+                "tags": [
+                    "bork"
+                ]
+            };
+            resourceObjects.push(object1);
+        }
         let phrixDrumsUrl = Object.values(_wav);
         let phrixDrumsNames = Object.keys(_wav);
-        for(let i1 = 0; i1 < phrixDrumsUrl.length; i1++){
-            let object1 = {
-                "name": phrixDrumsNames[i1],
-                "path": phrixDrumsUrl[i1],
+        for(let i2 = 0; i2 < phrixDrumsUrl.length; i2++){
+            let object2 = {
+                "name": phrixDrumsNames[i2],
+                "path": phrixDrumsUrl[i2],
                 "tags": [
                     "phrixus",
                     "drums"
                 ]
             };
-            resourceObjects.push(object1);
+            resourceObjects.push(object2);
         }
+        (0, _main.Pads).Application.audioURL = phrixDrumsUrl;
         let phrixBassUrl = Object.values(_wav1);
         let phrixBassNames = Object.keys(_wav1);
-        for(let i2 = 0; i2 < phrixDrumsUrl.length; i2++){
-            let object2 = {
-                "name": phrixBassNames[i2],
-                "path": phrixBassUrl[i2],
+        for(let i3 = 0; i3 < phrixDrumsUrl.length; i3++){
+            let object3 = {
+                "name": phrixBassNames[i3],
+                "path": phrixBassUrl[i3],
                 "tags": [
                     "phrixus",
                     "bass"
                 ]
             };
-            resourceObjects.push(object2);
+            resourceObjects.push(object3);
         }
         let phrixTexUrl = Object.values(_wav2);
         let phrixTexNames = Object.keys(_wav2);
-        for(let i3 = 0; i3 < phrixDrumsUrl.length; i3++){
-            let object3 = {
-                "name": phrixTexNames[i3],
-                "path": phrixTexUrl[i3],
+        for(let i4 = 0; i4 < phrixDrumsUrl.length; i4++){
+            let object4 = {
+                "name": phrixTexNames[i4],
+                "path": phrixTexUrl[i4],
                 "tags": [
                     "phrixus",
                     "texture"
                 ]
             };
-            resourceObjects.push(object3);
+            resourceObjects.push(object4);
         }
         let browser = /*#__PURE__*/ (0, _jsx.jsx)("div", {
             __source: {
                 fileName: "src/views/resourceBrowser/resourcebrowser.tsx",
-                lineNumber: 84,
+                lineNumber: 99,
                 columnNumber: 23
             },
             __self: this
         });
-        console.log("Resource Objects:", resourceObjects);
         resourceObjects.forEach((item)=>{
             let resourceItem = /*#__PURE__*/ (0, _jsx.jsx)(ResourceItem, {
                 name: item.name,
@@ -51489,7 +51649,7 @@ class ResourceBrowser {
                 tags: item.tags,
                 __source: {
                     fileName: "src/views/resourceBrowser/resourcebrowser.tsx",
-                    lineNumber: 87,
+                    lineNumber: 101,
                     columnNumber: 32
                 },
                 __self: this
@@ -51508,7 +51668,7 @@ class ResourceItem {
             class: "resource-tags-container",
             __source: {
                 fileName: "src/views/resourceBrowser/resourcebrowser.tsx",
-                lineNumber: 110,
+                lineNumber: 124,
                 columnNumber: 28
             },
             __self: this
@@ -51518,7 +51678,7 @@ class ResourceItem {
                 class: "resource-tag",
                 __source: {
                     fileName: "src/views/resourceBrowser/resourcebrowser.tsx",
-                    lineNumber: 113,
+                    lineNumber: 127,
                     columnNumber: 27
                 },
                 __self: this
@@ -51530,7 +51690,7 @@ class ResourceItem {
             class: "mr-2",
             __source: {
                 fileName: "src/views/resourceBrowser/resourcebrowser.tsx",
-                lineNumber: 117,
+                lineNumber: 131,
                 columnNumber: 26
             },
             __self: this
@@ -51539,7 +51699,7 @@ class ResourceItem {
             class: "resource-item d-flex w-100 justify-between align-center",
             __source: {
                 fileName: "src/views/resourceBrowser/resourcebrowser.tsx",
-                lineNumber: 118,
+                lineNumber: 132,
                 columnNumber: 20
             },
             __self: this
@@ -51547,7 +51707,7 @@ class ResourceItem {
             class: "resource-name",
             __source: {
                 fileName: "src/views/resourceBrowser/resourcebrowser.tsx",
-                lineNumber: 119,
+                lineNumber: 133,
                 columnNumber: 25
             },
             __self: this
@@ -51555,7 +51715,7 @@ class ResourceItem {
             class: "resource-player",
             __source: {
                 fileName: "src/views/resourceBrowser/resourcebrowser.tsx",
-                lineNumber: 122,
+                lineNumber: 136,
                 columnNumber: 25
             },
             __self: this
@@ -51563,7 +51723,7 @@ class ResourceItem {
             controls: true,
             __source: {
                 fileName: "src/views/resourceBrowser/resourcebrowser.tsx",
-                lineNumber: 123,
+                lineNumber: 137,
                 columnNumber: 29
             },
             __self: this
@@ -51571,7 +51731,7 @@ class ResourceItem {
             src: this.url,
             __source: {
                 fileName: "src/views/resourceBrowser/resourcebrowser.tsx",
-                lineNumber: 124,
+                lineNumber: 138,
                 columnNumber: 33
             },
             __self: this
@@ -51585,13 +51745,12 @@ class ResourceItem {
             if ((0, _main.Pads).Application.activePad.activeComponent) (0, _main.Pads).Application.activePad.removeActiveComponent((0, _main.Pads).Application.activePad);
             (0, _main.Pads).Application.showLoading();
             (0, _utils.Utils).getFileFromUrl(this.url, this.name).then((file)=>{
-                let sampler = new (0, _samplePad.SamplePad)((0, _main.Pads).Application.activePad, (0, _main.Pads).Application.activePad.channel);
+                let sampler = new (0, _sampler.SamplePad)((0, _main.Pads).Application.activePad, (0, _main.Pads).Application.activePad.channel);
                 sampler.addComponent((0, _main.Pads).Application.activePad.HTMLElement, (0, _main.Pads).Application.activePad.activeComponentContext);
                 (0, _main.Pads).Application.activePad.activeComponent = sampler;
                 (0, _main.Pads).Application.activePad.isReady = true;
                 sampler.registerFileToPlayer(file).then(()=>{
                     (0, _main.Pads).Application.activePad.activeComponent.isReady = true;
-                    console.warn("Context:", (0, _main.Pads).Application.activePad.padContext);
                     (0, _main.Pads).Application.toggleRightContent("Context");
                     (0, _main.Pads).Application.activePad.renderContext();
                 });
@@ -51601,7 +51760,7 @@ class ResourceItem {
     }
 }
 
-},{"@vertx/jsx":"4ObNr","../../components/samplePad":"4Sqbm","../../main":"l4cos","../../components/Utils":"5fpwy","../../resources/*.mp3":"SuNeb","../../resources/phrixus/drums/*.wav":"XuchO","../../resources/phrixus/bass/*.wav":"jdfP7","../../resources/phrixus/texture/*.wav":"j7495","../contextMenu/context.css":"19oOC","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"SuNeb":[function(require,module,exports) {
+},{"@vertx/jsx":"4ObNr","../../main":"l4cos","../../components/Utils":"5fpwy","../../resources/*.mp3":"SuNeb","../../resources/phrixus/drums/*.wav":"XuchO","../../resources/phrixus/bass/*.wav":"jdfP7","../../resources/phrixus/texture/*.wav":"j7495","../../resources/shulz/*.wav":"76Fod","../../components/sampler":"jptuK","../contextMenu/context.css":"19oOC","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"SuNeb":[function(require,module,exports) {
 const _temp0 = require("./Kick.mp3");
 const _temp1 = require("./sponge.mp3");
 module.exports = {
@@ -51847,8 +52006,17 @@ module.exports = require("./helpers/bundle-url").getBundleURL("hjEE9") + "Metall
 },{"./helpers/bundle-url":"lgJ39"}],"gA0Ng":[function(require,module,exports) {
 module.exports = require("./helpers/bundle-url").getBundleURL("hjEE9") + "PEBBLE_DRONE_01.0fa4776a.wav" + "?" + Date.now();
 
+},{"./helpers/bundle-url":"lgJ39"}],"76Fod":[function(require,module,exports) {
+const _temp0 = require("./a.wav");
+module.exports = {
+    "a": _temp0
+};
+
+},{"./a.wav":"eV5Dv"}],"eV5Dv":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("hjEE9") + "a.77347a53.wav" + "?" + Date.now();
+
 },{"./helpers/bundle-url":"lgJ39"}],"19oOC":[function() {},{}],"dIKiH":[function(require,module,exports) {
-module.exports = JSON.parse('{"name":"pads","version":"0.1.10","description":"","scripts":{"dev":"parcel serve -p 2000 ./src/index.html","build":"parcel build --no-cache ./src/index.html"},"author":"kbbs","license":"ISC","dependencies":{"@vertx/auth":"^1.0.0-preview.1","@vertx/jsx":"^1.0.0","babylonjs":"^5.27.0","babylonjs-gui":"^5.27.0","com.visr-vr.vertex.jsclient":"^0.3.2-dev0","parcel":"^2.7.0","soundcloud":"^3.3.2","toastr":"^2.1.4","tone":"^14.7.77","uuid":"^9.0.0"},"devDependencies":{"@parcel/resolver-glob":"^2.7.0","@parcel/transformer-sass":"^2.7.0","@parcel/transformer-typescript-tsc":"^2.7.0","@types/node":"^18.8.3"}}');
+module.exports = JSON.parse('{"name":"pads","version":"0.2.0","description":"","scripts":{"dev":"parcel serve -p 2000 ./src/index.html","build":"parcel build --no-cache ./src/index.html"},"author":"kbbs","license":"ISC","dependencies":{"@vertx/auth":"^1.0.0-preview.1","@vertx/jsx":"^1.0.0","babylonjs":"^5.27.0","babylonjs-gui":"^5.27.0","com.visr-vr.vertex.jsclient":"^0.3.2-dev0","parcel":"^2.7.0","soundcloud":"^3.3.2","toastr":"^2.1.4","tone":"^14.7.77","uuid":"^9.0.0"},"devDependencies":{"@parcel/resolver-glob":"^2.7.0","@parcel/transformer-sass":"^2.7.0","@parcel/transformer-typescript-tsc":"^2.7.0","@types/node":"^18.8.3"}}');
 
 },{}]},["93See","l4cos"], "l4cos", "parcelRequire9a2a")
 

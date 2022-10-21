@@ -24,19 +24,31 @@
     </div>
     <h3>LOADING..</h3>
 </div>
-    <div class="top-bar"><img src="/logo.8bb9af93.svg" style="height: 3vh; margin: 10px" alt="Pads Logo"><div style="text-align: right; flex-grow: 1; margin-right: 10px"><h3 id="version-number"></h3></div></div>
+    <div class="top-bar">
+        <img src="/logo.8bb9af93.svg" style="height: 3vh; margin: 10px" alt="Pads Logo">
+        <canvas id="master-fft-canvas" width="200px" height="35px"></canvas>
+        <button id="master-play">Play</button>
+        <button id="master-pause">Pause</button>
+        <label for="master-bpm-input" class="ml-1">BPM</label>
+        <input id="master-bpm-input" type="number" min="1" max="1000" value="125">
+        <div style="text-align: right; flex-grow: 1; margin-right: 10px">
+            <h3 id="version-number"></h3>
+        </div>
+    </div>
     <div style="width: 100vw; height: 90vh; display: flex">
         <!-- <canvas id="babylon-canvas" style="width:300px;height:300px"></canvas> -->
         <div id="main-container" class="main d-flex" style="width: 50%; height: 100%">
         </div>
         <div id="right-wrapper">
             <div id="right-button-wrapper" class="d-flex">
-                <button id="context-button-show" type="button" style="background: #fff !important; border: none !important">Item Context</button>
-                <button id="resource-button-show" type="button" style="background: #fff !important; border: none !important" class="inactive">Resource Browser</button>
+                <button id="context-button-show" type="button" style="background: #fff !important; border: none !important" class="primary-area-container">Item Context</button>
+                <button id="sequencer-button-show" type="button" style="background: #fff !important; border: none !important" class="primary-area-container inactive">Sequencer</button>
+                <button id="resource-button-show" type="button" style="background: #fff !important; border: none !important" class="primary-area-container inactive">Resource Browser</button>
             </div>
-            <div id="browser-wrapper" class="d-none">
-
+            <div id="sequencer-wrapper" class="d-none">
+                <h2>Load a pad to use Sequencer.</h2>
             </div>
+            <div id="browser-wrapper" class="d-none"></div>
             <div id="context-wrapper">
                 <div id="context-container" class="context">
                     <div class="pad-context d-flex" style="flex-direction: column; justify-content: center; align-items: center">

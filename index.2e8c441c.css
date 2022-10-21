@@ -26,6 +26,15 @@ p {
   position: absolute;
 }
 
+#master-bpm-input {
+  color: #ff0;
+  width: 100px;
+  background: none;
+  border: none;
+  padding: 5px;
+  font-weight: 700;
+}
+
 @keyframes rotate-3d {
   from {
     transform: rotate3d(0, 0, 1, 0deg);
@@ -186,6 +195,14 @@ button.inactive {
   margin-right: 10px;
 }
 
+.ml-1 {
+  margin-left: 5px;
+}
+
+.ml-2 {
+  margin-left: 10px;
+}
+
 .w-100 {
   width: 100%;
 }
@@ -306,6 +323,8 @@ button.inactive {
 
 .pad > .content > h3 {
   line-break: anywhere;
+  -webkit-user-select: none;
+  user-select: none;
   margin-left: 10%;
   font-size: .5rem;
 }
@@ -489,6 +508,27 @@ button.inactive {
   border: 1px solid #fff;
   margin: 2px;
   padding: 3px;
+}
+
+.sequencer-grid {
+  width: 600px;
+  grid-template-rows: 1fr 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  display: grid;
+}
+
+.sequencer-pad {
+  width: 150px;
+  height: 150px;
+  background: none;
+}
+
+.sequencer-pad.loaded {
+  background: #fffa2991;
+}
+
+.sequence-active {
+  background: #fffa29 !important;
 }
 
 /*# sourceMappingURL=index.2e8c441c.css.map */
